@@ -16,7 +16,7 @@ repos:
 
       - id: unit-tests
         name: unit tests
-        entry: bash -c 'python -m pytest src/tests/unit_tests/ -q --tb=short'
+        entry: bash -c 'python -m pytest backend/src/tests/unit_tests/ -q --tb=short'
         language: system
         pass_filenames: false
         stages: [pre-commit]
