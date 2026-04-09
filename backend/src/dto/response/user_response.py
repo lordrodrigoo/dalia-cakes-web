@@ -10,6 +10,6 @@ class UserResponse(BaseResponse):
     last_name: str
     email: EmailStr
     username: str
-    role: UserRole.ADMIN
+    role: UserRole
     created_at: datetime
     updated_at: datetime

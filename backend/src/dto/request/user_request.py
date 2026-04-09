@@ -13,7 +13,7 @@ class UserRequest(BaseModel):
     email: EmailStr = Field(...)
     username: str = Field(..., min_length=3, max_length=25)
     password: str = Field(..., min_length=8)
-    role: UserRole.ADMIN = Field(...)
+    role: UserRole = Field(UserRole.ADMIN)
 
     @field_validator('first_name', 'last_name')
     @classmethod
