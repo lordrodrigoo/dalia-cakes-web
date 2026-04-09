@@ -2,8 +2,8 @@ from uuid import UUID
 from pydantic import BaseModel
 
 class TokenPayload(BaseModel):
-    sub: str
-    user_id: UUID
+    sub: UUID
+    role: str
     exp: int
 
 class TokenResponse(BaseModel):

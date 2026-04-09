@@ -19,7 +19,7 @@ class UserRepository(UserRepositoryInterface):
             email=user.email,
             username=user.username,
             password=user.password,
-            role=UserRole.ADMIN,
+            role=user.role.value if isinstance(user.role, UserRole) else user.role,
             created_at=user.created_at,
             updated_at=user.updated_at
         )
@@ -35,7 +35,7 @@ class UserRepository(UserRepositoryInterface):
             entity.email = user.email
             entity.username = user.username
             entity.password = user.password
-            entity.role = user.role
+            entity.role = user.role.value if isinstance(user.role, UserRole) else user.role
             entity.updated_at = user.updated_at
             self.session.flush()
             return Users.from_entity(entity)
