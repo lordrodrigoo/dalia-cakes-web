@@ -9,6 +9,8 @@ from backend.src.dto.response.token_response import TokenPayload
 from backend.src.infra.db.repositories.admin_repository_interface import AdminRepository
 from backend.src.usecases.category_usecases import CategoryUsecase
 from backend.src.infra.db.repositories.category_repository_interface import CategoryRepository
+from backend.src.usecases.product_usecases import ProductUsecase
+from backend.src.infra.db.repositories.product_repository_interface import ProductRepository
 
 from backend.src.config.oauth2 import oauth2_scheme
 from backend.src.config.security import verify_token
@@ -40,3 +42,9 @@ def get_current_user(
 def get_category_usecase(db=Depends(get_db)):
     category_repository = CategoryRepository(db)
     return CategoryUsecase(category_repository)
+
+
+def get_product_usecase(db=Depends(get_db)):
+    product_repository = ProductRepository(db)
+    category_repository = CategoryRepository(db)
+    return ProductUsecase(product_repository, category_repository)

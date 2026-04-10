@@ -10,7 +10,7 @@ from sqlalchemy import pool
 from alembic import context
 
 from backend.src.infra.db.entities import (
-    admin,category
+    admin,category, product
 )
 from backend.src.infra.db.settings.base import Base
 from dotenv import load_dotenv  # pylint: disable=wrong-import-order
