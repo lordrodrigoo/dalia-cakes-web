@@ -8,8 +8,8 @@ from backend.src.domain.models.admin import AdminRole
 
 
 class AdminEntity(Base):
-    """Entity class representing the users table in the database."""
-    __tablename__ = "users"
+    """Entity class representing the admins table in the database."""
+    __tablename__ = "admins"
 
     id = Column(PG_UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     first_name = Column(String(25), nullable=False)
