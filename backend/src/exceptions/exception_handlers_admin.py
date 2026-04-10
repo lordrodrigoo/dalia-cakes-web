@@ -19,7 +19,7 @@ async def email_exception_handler(request: Request, exc: EmailAlreadyExistsExcep
     )
 
 
-class UserNotFoundException(Exception):
+class AdminNotFoundException(Exception):
     def __init__(self, user_id: UUID = None, email: str = None):
         self.user_id = user_id
         self.email = email
@@ -29,7 +29,7 @@ class UserNotFoundException(Exception):
             self.message = f"User with ID '{user_id}' not found."
         super().__init__(self.message)
 
-async def user_not_found_exception_handler(request: Request, exc: UserNotFoundException):
+async def admin_not_found_exception_handler(request: Request, exc: AdminNotFoundException):
     return JSONResponse(
         status_code=status.HTTP_404_NOT_FOUND,
         content={"message": exc.message}
@@ -50,13 +50,13 @@ async def username_exception_handler(request: Request, exc: UsernameAlreadyExist
     )
 
 
-class UserPermissionDeniedException(Exception):
+class AdminPermissionDeniedException(Exception):
     def __init__(self):
         self.message = "You do not have permission to update this user."
         super().__init__(self.message)
 
 
-async def user_permission_denied_exception_handler(request: Request, exc: UserPermissionDeniedException):
+async def admin_permission_denied_exception_handler(request: Request, exc: AdminPermissionDeniedException):
     return JSONResponse(
         status_code=status.HTTP_403_FORBIDDEN,
         content={'message': exc.message}

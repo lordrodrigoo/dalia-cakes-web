@@ -1,5 +1,5 @@
 import logging
-from backend.src.domain.repositories.user_repository import UserRepositoryInterface
+from backend.src.domain.repositories.admin_repository import AdminRepositoryInterface
 from backend.src.dto.response.token_response import TokenResponse
 from backend.src.config.security import (
     verify_password,
@@ -15,11 +15,11 @@ logger = logging.getLogger(__name__)
 
 
 class AuthUsecase:
-    def __init__(self, user_repository: UserRepositoryInterface):
-        self.user_repository = user_repository
+    def __init__(self, admin_repository: AdminRepositoryInterface):
+        self.admin_repository = admin_repository
 
     def login(self, username: str, password: str) -> TokenResponse:
-        user = self.user_repository.get_user_by_username(username)
+        user = self.admin_repository.get_admin_by_username(username)
 
         if not user:
             verify_password(password, DUMMY_HASH)  # previne timing attack
@@ -40,7 +40,7 @@ class AuthUsecase:
     def refresh_token(self, token: str) -> TokenResponse:
         payload = verify_token(token)
 
-        user = self.user_repository.get_user_by_id(payload.sub)
+        user = self.admin_repository.get_admin_by_id(payload.sub)
         if not user:
             logger.warning("Refresh failed: user not found", extra={"sub": payload.sub})
             raise InvalidCredentialsException()

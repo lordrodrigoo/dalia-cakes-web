@@ -21,6 +21,18 @@ def test_get_error_msg_returns_none_when_field_not_found():
     assert result is None
 
 
+def test_get_error_msg_returns_msg_when_field_found():
+    class DummyModel(BaseModel):
+        value: int = Field(..., gt=0)
+
+    with pytest.raises(Exception) as exc_info:
+        DummyModel(value=-1)
+
+    result = get_error_msg(exc_info, "value")
+    assert result is not None
+    assert isinstance(result, str)
+
+
 @pytest.mark.asyncio
 async def test_call_handler():
     received = {}

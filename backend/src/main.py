@@ -8,7 +8,7 @@ from backend.src.middlewares.middlewares import setup_middlewares
 from backend.src.config.settings import Settings
 from backend.src.config.logger import setup_logging
 from backend.src.config.owner import ensure_owner
-
+from backend.src.api.controllers.routers import include_routers
 
 load_dotenv()
 setup_logging()
@@ -39,3 +39,4 @@ setup_middlewares(app)
 register_exception_handlers(app)
 
 # ROUTES
+include_routers(app)

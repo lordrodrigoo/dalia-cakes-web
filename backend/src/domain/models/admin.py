@@ -5,20 +5,20 @@ from enum import Enum
 from uuid import UUID
 
 
-class UserRole(Enum):
+class AdminRole(Enum):
     ADMIN = "admin"
     OWNER = "owner"
 
 
 @dataclass
-class Users:
-    """Entity of domain - it represents a user in the system."""
+class Admin:
+    """Entity of domain - it represents an admin in the system."""
     first_name: str
     last_name: str
     username: str
     email: str
     password: str
-    role: UserRole = UserRole.ADMIN  #default role is admin
+    role: AdminRole = AdminRole.ADMIN  #default role is admin
     id: Optional[UUID] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
@@ -29,16 +29,16 @@ class Users:
         return f"{self.first_name} {self.last_name}"
 
     @staticmethod
-    def create_user(
+    def create_admin(
         first_name: str,
         last_name: str,
         username: str,
         email: str,
         password: str,
-        role: UserRole = UserRole.ADMIN
-    ) -> 'Users':
+        role: AdminRole = AdminRole.ADMIN
+    ) -> 'Admin':
         """Factory method to create a new user."""
-        return Users(
+        return Admin(
             first_name=first_name,
             last_name=last_name,
             username=username,
@@ -48,16 +48,16 @@ class Users:
     )
 
     @staticmethod
-    def from_entity(entity) -> 'Users':
-        """Converts a UserEntity to a Users domain model."""
-        return Users(
+    def from_entity(entity) -> 'Admin':
+        """Converts a AdminEntity to a Users domain model."""
+        return Admin(
             id=entity.id,
             first_name=entity.first_name,
             last_name=entity.last_name,
             username=entity.username,
             email=entity.email,
             password=entity.password,
-            role=UserRole(entity.role),
+            role=AdminRole(entity.role),
             created_at=entity.created_at,
             updated_at=entity.updated_at
         )

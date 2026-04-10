@@ -1,19 +1,19 @@
 import re
 from pydantic import BaseModel, EmailStr, Field, field_validator
-from backend.src.domain.models.user import UserRole
+from backend.src.domain.models.admin import AdminRole
 
 USERNAME_PATTERN = re.compile(r'^[A-Za-zÀ-ÿ0-9._]+$')
 PASSWORD_PATTERN = re.compile(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$')
 LETTERS_ONLY = re.compile(r'^[A-Za-zÀ-ÿ\s]+$')
 
 
-class UserRequest(BaseModel):
+class AdminRequest(BaseModel):
     first_name: str = Field(..., min_length=3, max_length=25)
     last_name: str = Field(..., min_length=3, max_length=25)
     email: EmailStr = Field(...)
     username: str = Field(..., min_length=3, max_length=25)
     password: str = Field(..., min_length=8)
-    role: UserRole = Field(UserRole.ADMIN)
+    role: AdminRole = Field(AdminRole.ADMIN)
 
     @field_validator('first_name', 'last_name')
     @classmethod

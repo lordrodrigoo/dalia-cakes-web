@@ -3,7 +3,7 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from backend.src.infra.db.settings.base import Base
-from backend.src.infra.db.entities.user import UserEntity
+from backend.src.infra.db.entities.admin import AdminEntity
 from backend.src.config.security import hash_password
 
 
@@ -23,7 +23,7 @@ def db_session():
 
 @pytest.fixture(scope="function")
 def fake_user(db_session):
-    user = UserEntity(
+    user = AdminEntity(
         first_name="Ana",
         last_name="Silva",
         username="ana.silva",

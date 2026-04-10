@@ -2,14 +2,14 @@ from uuid import UUID
 from datetime import datetime
 from pydantic import EmailStr
 from backend.src.dto.base import BaseResponse
-from backend.src.domain.models.user import UserRole
+from backend.src.domain.models.admin import AdminRole
 
-class UserResponse(BaseResponse):
+class AdminResponse(BaseResponse):
     id: UUID
     first_name: str
     last_name: str
     email: EmailStr
     username: str
-    role: UserRole
+    role: AdminRole
     created_at: datetime
     updated_at: datetime

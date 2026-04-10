@@ -3,15 +3,15 @@ from uuid import UUID
 import pytest
 from fastapi import status
 from backend.src.tests.helpers import _call_handler
-from backend.src.exceptions.exception_handlers_user import (
+from backend.src.exceptions.exception_handlers_admin import (
     EmailAlreadyExistsException,
-    UserNotFoundException,
+    AdminNotFoundException,
     UsernameAlreadyExistsException,
-    UserPermissionDeniedException,
+    AdminPermissionDeniedException,
     email_exception_handler,
-    user_not_found_exception_handler,
+    admin_not_found_exception_handler,
     username_exception_handler,
-    user_permission_denied_exception_handler,
+    admin_permission_denied_exception_handler,
 )
 
 
@@ -33,26 +33,26 @@ async def test_email_already_exists_handler_returns_409():
 
 
 # ──────────────────────────────────────────────
-# UserNotFoundException
+# AdminNotFoundException
 # ──────────────────────────────────────────────
 
 def test_user_not_found_by_id():
     user_id = UUID("00000000-0000-0000-0000-000000000001")
-    exc = UserNotFoundException(user_id=user_id)
+    exc = AdminNotFoundException(user_id=user_id)
     assert exc.user_id == user_id
     assert str(user_id) in exc.message
 
 
 def test_user_not_found_by_email():
-    exc = UserNotFoundException(email="notfound@email.com")
+    exc = AdminNotFoundException(email="notfound@email.com")
     assert exc.email == "notfound@email.com"
     assert "notfound@email.com" in exc.message
 
 
 @pytest.mark.asyncio
 async def test_user_not_found_handler_returns_404():
-    exc = UserNotFoundException(user_id=UUID("00000000-0000-0000-0000-000000000001"))
-    response = await _call_handler(user_not_found_exception_handler, exc)
+    exc = AdminNotFoundException(user_id=UUID("00000000-0000-0000-0000-000000000001"))
+    response = await _call_handler(admin_not_found_exception_handler, exc)
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
@@ -74,16 +74,16 @@ async def test_username_already_exists_handler_returns_409():
 
 
 # ──────────────────────────────────────────────
-# UserPermissionDeniedException
+# AdminPermissionDeniedException
 # ──────────────────────────────────────────────
 
 def test_user_permission_denied_message():
-    exc = UserPermissionDeniedException()
+    exc = AdminPermissionDeniedException()
     assert "permission" in exc.message.lower()
 
 
 @pytest.mark.asyncio
 async def test_user_permission_denied_handler_returns_403():
-    exc = UserPermissionDeniedException()
-    response = await _call_handler(user_permission_denied_exception_handler, exc)
+    exc = AdminPermissionDeniedException()
+    response = await _call_handler(admin_permission_denied_exception_handler, exc)
     assert response.status_code == status.HTTP_403_FORBIDDEN

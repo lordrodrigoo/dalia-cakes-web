@@ -29,7 +29,7 @@ def setup_logging():
         },
         "filters": {
             "correlation_id": {
-                "()": "src.config.logger.CorrelationIdFilter"
+                "()": "backend.src.config.logger.CorrelationIdFilter"
             }
         },
         "handlers": {

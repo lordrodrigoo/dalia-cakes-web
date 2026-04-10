@@ -1,8 +1,8 @@
 import os
 import logging
 from backend.src.infra.db.settings.connection import DBConnectionHandler
-from backend.src.infra.db.repositories.user_repository_interface import UserRepository
-from backend.src.domain.models.user import Users, UserRole
+from backend.src.infra.db.repositories.admin_repository_interface import AdminRepository
+from backend.src.domain.models.admin import Admin, AdminRole
 from backend.src.config.security import hash_password
 
 
@@ -33,25 +33,25 @@ def ensure_owner():
 
 
     with DBConnectionHandler() as db:
-        user_repo = UserRepository(db)
+        user_repo = AdminRepository(db)
 
-        existing_owner = user_repo.get_user_by_email(owner_email)
+        existing_owner = user_repo.get_admin_by_email(owner_email)
         if existing_owner:
             logger.info("Owner already exists — skipping creation.")
             return
 
 
-        if user_repo.get_user_by_username(owner_username):
+        if user_repo.get_admin_by_username(owner_username):
             logger.warning("Username already exists")
             return
 
-        user = Users(
+        user = Admin(
             email=owner_email,
             username=owner_username,
             password=hash_password(owner_password),
             first_name=owner_first_name,
             last_name=owner_last_name,
-            role=UserRole.OWNER,
+            role=AdminRole.OWNER,
         )
-        user_repo.create_user(user)
+        user_repo.create_admin(user)
         logger.info("Owner created successfully")

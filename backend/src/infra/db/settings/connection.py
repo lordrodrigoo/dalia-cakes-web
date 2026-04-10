@@ -8,7 +8,7 @@ from backend.src.infra.db.settings.base import Base
 
 
 # ENTITIES IMPORT FIX
-from backend.src.infra.db.entities.user import UserEntity
+from backend.src.infra.db.entities.admin import AdminEntity
 
 
 load_dotenv()

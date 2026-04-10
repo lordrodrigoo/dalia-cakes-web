@@ -3,12 +3,12 @@ from uuid import uuid4
 from datetime import datetime
 import pytest
 from pydantic import ValidationError
-from backend.src.dto.request.user_request import UserRequest
+from backend.src.dto.request.admin_request import AdminRequest
 from backend.src.dto.request.login_request import LoginRequest
 from backend.src.dto.request.refresh_token_request import RefreshTokenRequest
 from backend.src.dto.request.role_request import RoleUpdateRequest
-from backend.src.dto.response.user_response import UserResponse
-from backend.src.domain.models.user import UserRole
+from backend.src.dto.response.admin_response import AdminResponse
+from backend.src.domain.models.admin import AdminRole
 
 
 # ──────────────────────────────────────────────
@@ -27,31 +27,31 @@ def valid_user_data():
 
 
 # ──────────────────────────────────────────────
-# UserRequest — campo válido
+# AdminRequest — campo válido
 # ──────────────────────────────────────────────
 
 def test_valid_user_request(valid_user_data):
-    req = UserRequest(**valid_user_data)
+    req = AdminRequest(**valid_user_data)
     assert req.first_name == valid_user_data["first_name"]
     assert req.last_name == valid_user_data["last_name"]
     assert req.email == valid_user_data["email"]
     assert req.username == valid_user_data["username"]
     assert req.password == valid_user_data["password"]
-    assert req.role == UserRole.ADMIN  # default
+    assert req.role == AdminRole.ADMIN  # default
 
 
 def test_user_request_role_default(valid_user_data):
-    req = UserRequest(**valid_user_data)
-    assert req.role == UserRole.ADMIN
+    req = AdminRequest(**valid_user_data)
+    assert req.role == AdminRole.ADMIN
 
 
 def test_user_request_role_owner(valid_user_data):
-    req = UserRequest(**valid_user_data, role=UserRole.OWNER)
-    assert req.role == UserRole.OWNER
+    req = AdminRequest(**valid_user_data, role=AdminRole.OWNER)
+    assert req.role == AdminRole.OWNER
 
 
 # ──────────────────────────────────────────────
-# UserRequest — validações de campo
+# AdminRequest — validações de campo
 # ──────────────────────────────────────────────
 
 @pytest.mark.parametrize("field,value,expected_msg", [
@@ -73,7 +73,7 @@ def test_user_request_field_validations(valid_user_data, field, value, expected_
     data[field] = value
 
     with pytest.raises(ValidationError) as exc_info:
-        UserRequest(**data)
+        AdminRequest(**data)
 
     assert expected_msg in str(exc_info.value)
 
@@ -124,8 +124,8 @@ def test_refresh_token_too_short():
 # ──────────────────────────────────────────────
 
 def test_valid_role_update_request():
-    req = RoleUpdateRequest(role=UserRole.ADMIN)
-    assert req.role == UserRole.ADMIN
+    req = RoleUpdateRequest(role=AdminRole.ADMIN)
+    assert req.role == AdminRole.ADMIN
 
 
 def test_role_update_invalid_value():
@@ -134,33 +134,33 @@ def test_role_update_invalid_value():
 
 
 # ──────────────────────────────────────────────
-# UserResponse
+# AdminResponse
 # ──────────────────────────────────────────────
 
 def test_valid_user_response():
     now = datetime.now()
-    resp = UserResponse(
+    resp = AdminResponse(
         id=uuid4(),
         first_name="Ana",
         last_name="Silva",
         email="ana.silva@example.com",
         username="ana.silva",
-        role=UserRole.ADMIN,
+        role=AdminRole.ADMIN,
         created_at=now,
         updated_at=now,
     )
     assert resp.first_name == "Ana"
-    assert resp.role == UserRole.ADMIN
+    assert resp.role == AdminRole.ADMIN
 
 
 def test_user_response_missing_required_field():
     with pytest.raises(ValidationError):
-        UserResponse(
+        AdminResponse(
             first_name="Ana",
             last_name="Silva",
             email="ana.silva@example.com",
             username="ana.silva",
-            role=UserRole.ADMIN,
+            role=AdminRole.ADMIN,
             created_at=datetime.now(),
             updated_at=datetime.now(),
             # id ausente
