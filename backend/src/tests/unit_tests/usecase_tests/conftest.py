@@ -1,12 +1,17 @@
 # pylint: disable=redefined-outer-name
 from uuid import uuid4
 from datetime import datetime
+from decimal import Decimal
 from unittest.mock import MagicMock
 import pytest
 from backend.src.domain.models.admin import Admin, AdminRole
+from backend.src.domain.models.category import Category
+from backend.src.domain.models.product import Product
 from backend.src.dto.response.admin_response import AdminResponse
 from backend.src.usecases.admin_usecases import AdminUsecase
 from backend.src.usecases.auth_usecases import AuthUsecase
+from backend.src.usecases.category_usecases import CategoryUsecase
+from backend.src.usecases.product_usecases import ProductUsecase
 from backend.src.config.security import hash_password
 
 
@@ -102,3 +107,75 @@ def current_user(fake_user_domain):
         created_at=fake_user_domain.created_at,
         updated_at=fake_user_domain.updated_at,
     )
+
+
+# ──────────────────────────────────────────────
+# Category fixtures
+# ──────────────────────────────────────────────
+
+@pytest.fixture
+def category_repository_mock():
+    return MagicMock()
+
+
+@pytest.fixture
+def category_usecase(category_repository_mock):
+    return CategoryUsecase(category_repository_mock)
+
+
+@pytest.fixture
+def fake_category_domain():
+    return Category(
+        id=uuid4(),
+        name="Bolos Decorados",
+        slug="bolos-decorados",
+        image_url="https://example.com/bolos.jpg",
+        created_at=datetime.now(),
+        updated_at=datetime.now(),
+    )
+
+
+@pytest.fixture
+def valid_category_data():
+    return {
+        "name": "Bolos Decorados",
+        "slug": "bolos-decorados",
+        "image_url": "https://example.com/bolos.jpg",
+    }
+
+
+# ──────────────────────────────────────────────
+# Product fixtures
+# ──────────────────────────────────────────────
+
+@pytest.fixture
+def product_repository_mock():
+    return MagicMock()
+
+
+@pytest.fixture
+def product_usecase(product_repository_mock, category_repository_mock):
+    return ProductUsecase(product_repository_mock, category_repository_mock)
+
+
+@pytest.fixture
+def fake_product_domain(fake_category_domain):
+    return Product(
+        id=uuid4(),
+        name="Bolo de Cenoura",
+        price=Decimal("45.90"),
+        image_url="https://example.com/bolo.jpg",
+        category_id=fake_category_domain.id,
+        created_at=datetime.now(),
+        updated_at=datetime.now(),
+    )
+
+
+@pytest.fixture
+def valid_product_data(fake_category_domain):
+    return {
+        "name": "Bolo de Cenoura",
+        "price": Decimal("45.90"),
+        "category_id": fake_category_domain.id,
+        "image_url": "https://example.com/bolo.jpg",
+    }

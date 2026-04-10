@@ -5,7 +5,7 @@ from backend.src.infra.db.entities.admin import AdminEntity
 from backend.src.config.security import hash_password
 
 
-def test_insert_user(db_session, fake_user):
+def test_insert_admin(db_session, fake_user):
     assert fake_user.id is not None
     assert fake_user.first_name == "Ana"
     assert fake_user.last_name == "Silva"
@@ -23,13 +23,13 @@ def test_delete_admin(db_session, fake_user):
     deleted_user = db_session.query(AdminEntity).filter_by(id=fake_user.id).first()
     assert deleted_user is None
 
-def test_find_user_by_id(db_session, fake_user):
+def test_find_admin_by_id(db_session, fake_user):
     found_user = db_session.query(AdminEntity).filter_by(id=fake_user.id).first()
     assert found_user is not None
 
-def test_find_all_users(db_session, fake_user):
-    users = db_session.query(AdminEntity).all()
-    assert len(users) >= 1
+def test_find_all_admins(db_session, fake_user):
+    admins = db_session.query(AdminEntity).all()
+    assert len(admins) >= 1
 
 def test_unique_email(db_session, fake_user):
     duplicate = AdminEntity(

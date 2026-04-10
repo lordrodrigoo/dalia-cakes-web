@@ -23,7 +23,7 @@ class CategoryUsecase:
             raise CategorySlugAlreadyExistsException(category_request.slug)
 
         if self.category_repository.get_category_by_name(category_request.name):
-            logger.warning("Name already exists", extra={"name": category_request.name})
+            logger.warning("Name already exists", extra={"category_name": category_request.name})
             raise CategoryNameAlreadyExistsException(category_request.name)
 
         category = Category(
@@ -65,7 +65,7 @@ class CategoryUsecase:
 
         if category_request.name != category.name:
             if self.category_repository.get_category_by_name(category_request.name):
-                logger.warning("Name already exists for update", extra={"name": category_request.name})
+                logger.warning("Name already exists for update", extra={"category_name": category_request.name})
                 raise CategoryNameAlreadyExistsException(category_request.name)
 
 
