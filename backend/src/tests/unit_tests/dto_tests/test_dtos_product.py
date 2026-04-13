@@ -76,6 +76,16 @@ def test_product_request_field_validations(valid_product_data, field, value, exp
     assert expected_msg in str(exc_info.value)
 
 
+def test_validate_price_directly_raises_for_zero():
+    with pytest.raises(ValueError, match="price must be greater than zero"):
+        ProductRequest.validate_price(Decimal("0"))
+
+
+def test_validate_price_directly_raises_for_negative():
+    with pytest.raises(ValueError, match="price must be greater than zero"):
+        ProductRequest.validate_price(Decimal("-5"))
+
+
 # ──────────────────────────────────────────────
 # ProductResponse
 # ──────────────────────────────────────────────

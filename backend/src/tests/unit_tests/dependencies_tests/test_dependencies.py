@@ -10,6 +10,7 @@ from backend.src.usecases.admin_usecases import AdminUsecase
 from backend.src.usecases.auth_usecases import AuthUsecase
 from backend.src.usecases.category_usecases import CategoryUsecase
 from backend.src.usecases.product_usecases import ProductUsecase
+from backend.src.usecases.instagram_usecases import InstagramPostUsecase
 from backend.src.api.dependencies import (
     get_db,
     get_admin_usecase,
@@ -17,6 +18,7 @@ from backend.src.api.dependencies import (
     get_current_user,
     get_category_usecase,
     get_product_usecase,
+    get_instagram_usecase,
 )
 
 
@@ -77,6 +79,16 @@ def test_get_product_usecase_returns_product_usecase():
     mock_db = MagicMock()
     result = get_product_usecase(db=mock_db)
     assert isinstance(result, ProductUsecase)
+
+
+# ──────────────────────────────────────────────
+# get_instagram_usecase
+# ──────────────────────────────────────────────
+
+def test_get_instagram_usecase_returns_instagram_usecase():
+    mock_db = MagicMock()
+    result = get_instagram_usecase(db=mock_db)
+    assert isinstance(result, InstagramPostUsecase)
 
 
 # ──────────────────────────────────────────────

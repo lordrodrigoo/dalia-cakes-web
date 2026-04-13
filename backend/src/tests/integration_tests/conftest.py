@@ -1,5 +1,6 @@
 # pylint: disable=redefined-outer-name
 from decimal import Decimal
+from datetime import datetime, timezone, timedelta
 import pytest
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
@@ -7,6 +8,8 @@ from backend.src.infra.db.settings.base import Base
 from backend.src.infra.db.entities.admin import AdminEntity
 from backend.src.infra.db.entities.category import CategoryEntity
 from backend.src.infra.db.entities.product import ProductEntity
+from backend.src.infra.db.entities.decorated_cake import DecoratedCakeEntity
+from backend.src.infra.db.entities.instagram_post import InstagramPostEntity
 from backend.src.config.security import hash_password
 
 
@@ -72,3 +75,39 @@ def fake_product(db_session, fake_category):
     db_session.commit()
     db_session.refresh(product)
     return product
+
+
+@pytest.fixture(scope="function")
+def fake_decorated_cake(db_session):
+    cake = DecoratedCakeEntity(
+        name="Feminino",
+        slug="feminino",
+        hashtag="boloFeminino",
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc),
+    )
+    db_session.add(cake)
+    db_session.commit()
+    db_session.refresh(cake)
+    return cake
+
+
+@pytest.fixture(scope="function")
+def fake_instagram_post(db_session, fake_decorated_cake):
+    now = datetime.now(timezone.utc)
+    post = InstagramPostEntity(
+        instagram_id="123456789",
+        caption="Bolo lindo #boloFeminino",
+        media_url="https://example.com/img.jpg",
+        permalink="https://instagram.com/p/abc",
+        subcategory_id=fake_decorated_cake.id,
+        is_featured=True,
+        featured_until=now + timedelta(days=3),
+        synced_at=now,
+        created_at=now,
+        updated_at=now,
+    )
+    db_session.add(post)
+    db_session.commit()
+    db_session.refresh(post)
+    return post

@@ -9,6 +9,7 @@ from backend.src.config.settings import Settings
 from backend.src.config.logger import setup_logging
 from backend.src.config.owner import ensure_owner
 from backend.src.api.controllers.routers import include_routers
+from backend.src.infra.instagram.scheduler import start_scheduler
 
 load_dotenv()
 setup_logging()
@@ -19,7 +20,9 @@ _env = os.getenv("ENV", "development")
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     ensure_owner()
+    scheduler = start_scheduler()
     yield
+    scheduler.shutdown()
 
 
 app = FastAPI(

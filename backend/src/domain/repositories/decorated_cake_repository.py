@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from uuid import UUID
 from typing import Optional
-from backend.src.domain.models.decorated_cakes import DecoratedCake
+from backend.src.domain.models.decorated_cake import DecoratedCake
 
 
 class DecoratedCakeRepositoryInterface(ABC):

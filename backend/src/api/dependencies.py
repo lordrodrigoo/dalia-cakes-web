@@ -14,6 +14,9 @@ from backend.src.infra.db.repositories.product_repository_interface import Produ
 from backend.src.usecases.instagram_usecases import InstagramPostUsecase
 from backend.src.infra.db.repositories.instagram_post_repository_interface import InstagramPostRepository
 from backend.src.infra.db.repositories.decorated_cake_repository_interface import DecoratedCakeRepository
+from backend.src.usecases.chatbot_usecases import ChatbotUsecase
+from backend.src.infra.gemini.gemini_client import GeminiClient
+from backend.src.config.settings import settings
 
 from backend.src.config.oauth2 import oauth2_scheme
 from backend.src.config.security import verify_token
@@ -57,3 +60,10 @@ def get_instagram_usecase(db=Depends(get_db)):
     instagram_post_repository = InstagramPostRepository(db)
     decorated_cake_repository = DecoratedCakeRepository(db)
     return InstagramPostUsecase(instagram_post_repository, decorated_cake_repository)
+
+
+def get_chatbot_usecase(db=Depends(get_db)):
+    product_repository = ProductRepository(db)
+    category_repository = CategoryRepository(db)
+    gemini_client = GeminiClient(api_key=settings.GEMINI_API_KEY, model=settings.GEMINI_MODEL)
+    return ChatbotUsecase(product_repository, category_repository, gemini_client)

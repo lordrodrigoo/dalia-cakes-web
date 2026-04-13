@@ -1,14 +1,15 @@
 from uuid import UUID
 from typing import Optional
 from backend.src.infra.db.settings.connection import DBConnectionHandler
-from backend.src.infra.db.entities.decorated_cakes import DecoratedCakeEntity
+from backend.src.infra.db.entities.decorated_cake import DecoratedCakeEntity
 from backend.src.domain.repositories.decorated_cake_repository import DecoratedCakeRepositoryInterface
-from backend.src.domain.models.decorated_cakes import DecoratedCake
+from backend.src.domain.models.decorated_cake import DecoratedCake
 
 
 class DecoratedCakeRepository(DecoratedCakeRepositoryInterface):
     def __init__(self, db_connection: DBConnectionHandler):
         self.session = db_connection.get_session()
+
 
     def get_by_id(self, decorated_cake_id: UUID) -> Optional[DecoratedCake]:
         entity = self.session.query(DecoratedCakeEntity).filter_by(id=decorated_cake_id).first()
