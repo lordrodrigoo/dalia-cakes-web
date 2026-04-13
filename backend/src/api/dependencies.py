@@ -11,6 +11,9 @@ from backend.src.usecases.category_usecases import CategoryUsecase
 from backend.src.infra.db.repositories.category_repository_interface import CategoryRepository
 from backend.src.usecases.product_usecases import ProductUsecase
 from backend.src.infra.db.repositories.product_repository_interface import ProductRepository
+from backend.src.usecases.instagram_usecases import InstagramPostUsecase
+from backend.src.infra.db.repositories.instagram_post_repository_interface import InstagramPostRepository
+from backend.src.infra.db.repositories.decorated_cake_repository_interface import DecoratedCakeRepository
 
 from backend.src.config.oauth2 import oauth2_scheme
 from backend.src.config.security import verify_token
@@ -48,3 +51,9 @@ def get_product_usecase(db=Depends(get_db)):
     product_repository = ProductRepository(db)
     category_repository = CategoryRepository(db)
     return ProductUsecase(product_repository, category_repository)
+
+
+def get_instagram_usecase(db=Depends(get_db)):
+    instagram_post_repository = InstagramPostRepository(db)
+    decorated_cake_repository = DecoratedCakeRepository(db)
+    return InstagramPostUsecase(instagram_post_repository, decorated_cake_repository)

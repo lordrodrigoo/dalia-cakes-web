@@ -34,6 +34,12 @@ from backend.src.exceptions.exception_handlers_product import (
     product_not_found_exception_handler,
     product_category_not_found_exception_handler,
 )
+from backend.src.exceptions.exception_handlers_instagram import (
+    InstagramPostNotFoundException,
+    instagram_post_not_found_exception_handler,
+    DecoratedCakeNotFoundException,
+    decorated_cake_not_found_exception_handler
+)
 
 def register_exception_handlers(app: FastAPI):
     app.add_exception_handler(RequestValidationError, pydantic_validation_handler)
@@ -49,3 +55,5 @@ def register_exception_handlers(app: FastAPI):
     app.add_exception_handler(CategorySlugAlreadyExistsException, category_slug_already_exists_exception_handler)
     app.add_exception_handler(ProductNotFoundException, product_not_found_exception_handler)
     app.add_exception_handler(ProductCategoryNotFoundException, product_category_not_found_exception_handler)
+    app.add_exception_handler(InstagramPostNotFoundException, instagram_post_not_found_exception_handler)
+    app.add_exception_handler(DecoratedCakeNotFoundException, decorated_cake_not_found_exception_handler)
