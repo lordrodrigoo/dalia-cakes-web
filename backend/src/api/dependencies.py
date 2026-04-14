@@ -17,6 +17,8 @@ from backend.src.infra.db.repositories.decorated_cake_repository_interface impor
 from backend.src.usecases.chatbot_usecases import ChatbotUsecase
 from backend.src.infra.gemini.gemini_client import GeminiClient
 from backend.src.config.settings import settings
+from backend.src.infra.s3.s3_client import S3Client
+from backend.src.usecases.upload_usecases import UploadUsecase
 
 from backend.src.config.oauth2 import oauth2_scheme
 from backend.src.config.security import verify_token
@@ -67,3 +69,13 @@ def get_chatbot_usecase(db=Depends(get_db)):
     category_repository = CategoryRepository(db)
     gemini_client = GeminiClient(api_key=settings.GEMINI_API_KEY, model=settings.GEMINI_MODEL)
     return ChatbotUsecase(product_repository, category_repository, gemini_client)
+
+
+def get_upload_usecase():
+    s3 = S3Client(
+        access_key=settings.AWS_ACCESS_KEY_ID,
+        secret_key=settings.AWS_SECRET_ACCESS_KEY,
+        bucket=settings.AWS_S3_BUCKET,
+        region=settings.AWS_S3_REGION,
+    )
+    return UploadUsecase(s3)

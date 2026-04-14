@@ -26,4 +26,10 @@ class Settings:
     BUSINESS_ORDER_ADVANCE_DAYS: str = os.getenv("BUSINESS_ORDER_ADVANCE_DAYS", "3 dias")
     CHATBOT_MAX_HISTORY: int = int(os.getenv("CHATBOT_MAX_HISTORY", "10"))
 
+    # AWS S3
+    AWS_ACCESS_KEY_ID: str = os.getenv("AWS_ACCESS_KEY_ID", "")
+    AWS_SECRET_ACCESS_KEY: str = os.getenv("AWS_SECRET_ACCESS_KEY", "")
+    AWS_S3_BUCKET: str = os.getenv("AWS_S3_BUCKET", "")
+    AWS_S3_REGION: str = os.getenv("AWS_S3_REGION", "us-east-1")
+
 settings = Settings()

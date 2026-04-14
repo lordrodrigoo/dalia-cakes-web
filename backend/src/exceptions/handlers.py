@@ -44,6 +44,14 @@ from backend.src.exceptions.exception_handlers_chatbot import (
     ChatbotUnavailableException,
     chatbot_unavailable_exception_handler,
 )
+from backend.src.exceptions.exception_handlers_upload import (
+    ImageUploadException,
+    InvalidUploadFolderException,
+    InvalidImageTypeException,
+    invalid_upload_folder_exception_handler,
+    invalid_image_type_exception_handler,
+    image_upload_exception_handler,
+)
 
 def register_exception_handlers(app: FastAPI):
     app.add_exception_handler(RequestValidationError, pydantic_validation_handler)
@@ -62,3 +70,6 @@ def register_exception_handlers(app: FastAPI):
     app.add_exception_handler(InstagramPostNotFoundException, instagram_post_not_found_exception_handler)
     app.add_exception_handler(DecoratedCakeNotFoundException, decorated_cake_not_found_exception_handler)
     app.add_exception_handler(ChatbotUnavailableException, chatbot_unavailable_exception_handler)
+    app.add_exception_handler(ImageUploadException, image_upload_exception_handler)
+    app.add_exception_handler(InvalidUploadFolderException, invalid_upload_folder_exception_handler)
+    app.add_exception_handler(InvalidImageTypeException, invalid_image_type_exception_handler)
