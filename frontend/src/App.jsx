@@ -12,14 +12,16 @@ import Contato from './pages/Contato'
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/cardapio" element={<Cardapio />} />
-        <Route path="/bolos-decorados" element={<BolosDecorados />} />
-        <Route path="/produtos" element={<Produtos />} />
-        <Route path="/sobre" element={<Sobre />} />
-        <Route path="/contato" element={<Contato />} />
-      </Routes>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/cardapio" element={<Cardapio />} />
+          <Route path="/bolos-decorados" element={<BolosDecorados />} />
+          <Route path="/produtos" element={<Produtos />} />
+          <Route path="/sobre" element={<Sobre />} />
+          <Route path="/contato" element={<Contato />} />
+        </Routes>
+      </Layout>
     </BrowserRouter>
   )
 }

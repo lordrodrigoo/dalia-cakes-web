@@ -8,9 +8,9 @@ export default function Home() {
     return (
         <main>
             <HeroBanner />
+            <InstagramFeed />
             <CategoryCards />
             <FeaturedProducts />
-            <InstagramFeed />
             <WhatsAppCTA />
         </main>
     )

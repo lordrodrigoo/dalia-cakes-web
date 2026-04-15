@@ -1,6 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
 import { useState } from "react";
-import "../styles/header.css";
 
 const links = [
     { to: "/", label: "Início" },
