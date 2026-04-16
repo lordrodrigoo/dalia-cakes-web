@@ -16,6 +16,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cardapio" element={<Cardapio />} />
+          <Route path="/cardapio/:categoriaSlug" element={<Produtos />} />
           <Route path="/bolos-decorados" element={<BolosDecorados />} />
           <Route path="/produtos" element={<Produtos />} />
           <Route path="/sobre" element={<Sobre />} />

@@ -20,10 +20,104 @@
 }
 
 .hero__subtitle {
-    @apply text-gray-600 text-lg md:text-xl max-w-md ;
+    @apply text-gray-600 text-lg md:text-xl max-w-md;
 }
 
 .hero__cta {
     @apply mt-2 px-8 py-3 bg-pink-500 text-white font-semibold rounded-full
            hover:bg-pink-400 transition-colors no-underline;
+}
+
+/* ── Instagram Feed ─────────────────────────── */
+.instagram-feed {
+    @apply py-10 px-0 w-full;
+}
+
+.instagram-feed__title {
+    @apply text-2xl font-bold text-gray-800 mb-6 text-center;
+}
+
+/* Wrapper que envolve setas + carousel */
+.instagram-feed__slider-wrapper {
+    @apply relative flex items-center gap-2 px-2;
+}
+
+/* Carousel (keen-slider precisa de overflow: hidden internamente, não mexemos nisso) */
+.instagram-feed__carousel {
+    @apply flex-1;
+}
+
+/* Cada slide */
+.instagram-feed__item {
+    @apply block bg-white rounded-xl shadow overflow-hidden no-underline;
+}
+
+/* Wrapper da imagem — o scale fica aqui dentro */
+.instagram-feed__img-wrapper {
+    @apply overflow-hidden;
+}
+
+.instagram-feed__img {
+    @apply w-full aspect-square object-cover transition-transform duration-500 ease-in-out;
+}
+
+.instagram-feed__item:hover .instagram-feed__img {
+    @apply scale-105;
+}
+
+/* Caption opcional */
+.instagram-feed__caption {
+    @apply text-sm text-gray-600 px-3 py-2 line-clamp-2;
+}
+
+/* Single post (quando há só 1) */
+.instagram-feed__single {
+    @apply flex justify-center;
+}
+
+.instagram-feed__single .instagram-feed__item {
+    @apply max-w-sm w-full;
+}
+
+/* Setas do carousel */
+.instagram-feed__arrow {
+    @apply flex-shrink-0 bg-white border border-pink-200 text-pink-500 rounded-full
+           w-10 h-10 flex items-center justify-center text-2xl font-bold
+           shadow hover:bg-pink-50 hover:border-pink-400 transition-all
+           cursor-pointer select-none z-10;
+}
+
+/* ── Category Cards ─────────────────────────── */
+.category-card {
+    @apply bg-white rounded-xl shadow overflow-hidden flex flex-col h-full hover:scale-105 transition-transform duration-300 origin-center cursor-pointer;
+    text-decoration: none;
+}
+
+.category-card-img-wrapper {
+    @apply overflow-hidden rounded-t-xl;
+}
+
+.category-card-img {
+    @apply w-full h-48 object-cover transition-transform duration-500 ease-in-out origin-center;
+}
+
+.category-card:hover .category-card-img {
+    @apply scale-105;
+}
+
+.category-card-content {
+    @apply p-4 flex-1 flex flex-col justify-between;
+}
+
+.category-card-title {
+    @apply text-lg font-semibold mb-2 text-pink-600;
+}
+
+.category-card-desc {
+    @apply text-gray-600 mb-2 flex-1;
+}
+
+.category-card-btn {
+    @apply mt-2 px-4 py-2 bg-pink-500 text-white rounded-full font-semibold hover:bg-pink-400 transition-colors w-max self-start;
+    pointer-events: none;
 }
