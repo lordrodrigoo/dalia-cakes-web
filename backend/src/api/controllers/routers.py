@@ -6,6 +6,7 @@ from backend.src.api.controllers.instagram_controller import router as instagram
 from backend.src.api.controllers.decorated_cakes_controller import router as decorated_cakes_router
 from backend.src.api.controllers.chatbot_controller import router as chatbot_router
 from backend.src.api.controllers.upload_controller import router as upload_router
+from backend.src.api.controllers.auth_controller import router as auth_router
 
 def include_routers(app: FastAPI):
     app.include_router(admin_router)
@@ -15,3 +16,4 @@ def include_routers(app: FastAPI):
     app.include_router(decorated_cakes_router)
     app.include_router(chatbot_router)
     app.include_router(upload_router)
+    app.include_router(auth_router)
