@@ -29,7 +29,7 @@ Post aparece em "Últimos Bolos" na Home
 e em Bolos Decorados (seção de destaque)
 por 3 dias (featured_until = synced_at + 3 dias)
         │
-        ▼  após 3 dias
+        ▼  após 15 dias
 Post sai do destaque (is_featured = false)
 e passa a exibir apenas em:
 bolos-decorados/{subcategoria}
@@ -54,7 +54,7 @@ ex: bolos-decorados/feminino
 
 ## Regras de Negócio
 
-- `featured_until` = `synced_at + 3 dias`
+- `featured_until` = `synced_at + 15 dias`
 - `is_featured` é atualizado automaticamente por um job agendado
 - Um post pode ter múltiplas hashtags, mas apenas a primeira hashtag de categoria reconhecida é usada
 - A sincronização roda a cada `INSTAGRAM_SYNC_INTERVAL_MINUTES` minutos (configurável via `.env`)
