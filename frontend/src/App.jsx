@@ -7,6 +7,8 @@ import BolosDecorados from './pages/BolosDecorados'
 import Produtos from './pages/Produtos'
 import Sobre from './pages/Sobre'
 import Contato from './pages/Contato'
+import LoginPage from './pages/LoginPage'
+import ProtectedRoute from './components/ProtectedRoute'
 
 
 export default function App() {
@@ -17,10 +19,19 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/cardapio" element={<Cardapio />} />
           <Route path="/cardapio/:categoriaSlug" element={<Produtos />} />
-          <Route path="/bolos-decorados" element={<BolosDecorados />} />
-          <Route path="/produtos" element={<Produtos />} />
+          <Route path="/bolos-decorados" element={
+            <ProtectedRoute>
+              <BolosDecorados />
+            </ProtectedRoute>
+          } />
+          <Route path="/produtos" element={
+            <ProtectedRoute>
+              <Produtos />
+            </ProtectedRoute>
+          } />
           <Route path="/sobre" element={<Sobre />} />
           <Route path="/contato" element={<Contato />} />
+          <Route path="/login" element={<LoginPage />} />
         </Routes>
       </Layout>
     </BrowserRouter>

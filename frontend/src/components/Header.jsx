@@ -1,50 +1,49 @@
-import { Link, NavLink } from "react-router-dom";
-import { useState } from "react";
+import { Link, NavLink } from "react-router-dom"
+import { useState } from "react"
+import { headerStyles as s } from "../styles/header.styles"
 
 const links = [
-    { to: "/", label: "Início" },
-    { to: "/cardapio", label: "Cardápio" },
-    { to: "/sobre", label: "Sobre" },
-    { to: "/contato", label: "Contato" },
-];
+  { to: "/", label: "Início" },
+  { to: "/cardapio", label: "Cardápio" },
+  { to: "/sobre", label: "Sobre" },
+  { to: "/contato", label: "Contato" },
+]
 
 export default function Header() {
-    const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
-    return (
-        <header className="header">
-            <div className="header__inner">
-                <Link to="/" className="header__logo">
-                    Dalia Bolos e Doces
-                </Link>
+  return (
+    <header className={s.header}>
+      <div className={s.inner}>
+        <Link to="/" className={s.logo}>
+          Dalia Bolos e Doces
+        </Link>
 
-                <nav className={`header__nav${open ? " header__nav--open" : ""}`}>
-                    {links.map((link) => (
-                        <NavLink
-                            key={link.to}
-                            to={link.to}
-                            end={link.to === "/"}
-                            className={({ isActive }) =>
-                                `header__link${isActive ? " header__link--active" : ""}`
-                            }
-                            onClick={() => setOpen(false)}
-                        >
-                            {link.label}
-                        </NavLink>
-                    ))}
-                </nav>
+        <nav className={open ? s.navOpen : s.nav}>
+          {links.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              end={link.to === "/"}
+              className={({ isActive }) => isActive ? s.linkActive : s.link}
+              onClick={() => setOpen(false)}
+            >
+              {link.label}
+            </NavLink>
+          ))}
+        </nav>
 
-                <button
-                    className="header__hamburger"
-                    onClick={() => setOpen((prev) => !prev)}
-                    aria-label={open ? "Fechar menu" : "Abrir menu"}
-                    aria-expanded={open}
-                >
-                    <span className="header__hamburger-bar" />
-                    <span className="header__hamburger-bar" />
-                    <span className="header__hamburger-bar" />
-                </button>
-            </div>
-        </header>
-    );
+        <button
+          className={s.hamburger}
+          onClick={() => setOpen((prev) => !prev)}
+          aria-label={open ? "Fechar menu" : "Abrir menu"}
+          aria-expanded={open}
+        >
+          <span className={s.hamburgerBar} />
+          <span className={s.hamburgerBar} />
+          <span className={s.hamburgerBar} />
+        </button>
+      </div>
+    </header>
+  )
 }
