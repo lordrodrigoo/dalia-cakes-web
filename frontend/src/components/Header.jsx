@@ -5,6 +5,7 @@ import { headerStyles as s } from "../styles/header.styles"
 const links = [
   { to: "/", label: "Início" },
   { to: "/cardapio", label: "Cardápio" },
+  { to: "/bolos-decorados", label: "Bolos Decorados" },
   { to: "/sobre", label: "Sobre" },
   { to: "/contato", label: "Contato" },
 ]

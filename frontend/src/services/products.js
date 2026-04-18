@@ -1,4 +1,17 @@
-import api from "./api";
+import api from "./api"
 
-export const getProducts =  () => api.get('/products')
+export const getProducts = () => api.get('/products')
+
 export const getProductById = (id) => api.get(`/products/${id}`)
+
+export const getProductsByCategory = (slug) => api.get(`/products/category/${slug}`)
+
+export const createProduct = (formData) => api.post('/products', formData, {
+  headers: { 'Content-Type': 'multipart/form-data' }
+})
+
+export const updateProduct = (id, formData) => api.put(`/products/${id}`, formData, {
+  headers: { 'Content-Type': 'multipart/form-data' }
+})
+
+export const deleteProduct = (id) => api.delete(`/products/${id}`)
