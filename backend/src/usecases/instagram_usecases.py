@@ -1,4 +1,6 @@
 from uuid import UUID
+import uuid as uuid_lib
+from typing import Optional
 import logging
 from datetime import datetime, timezone, timedelta
 from backend.src.domain.models.instagram_post import InstagramPost
@@ -28,6 +30,7 @@ class InstagramPostUsecase:
     ):
         self.instagram_post_repository = instagram_post_repository
         self.decorated_cake_repository = decorated_cake_repository
+
 
     def sync_post(self, instagram_id: str, caption: str | None, media_url: str, permalink: str) -> InstagramPostResponse:
         existing = self.instagram_post_repository.get_by_instagram_id(instagram_id)
@@ -60,9 +63,11 @@ class InstagramPostUsecase:
         logger.info("Post synced", extra={"instagram_id": instagram_id, "post_id": saved.id})
         return InstagramPostResponse(**saved.__dict__)
 
+
     def get_featured(self) -> list[InstagramPostResponse]:
         posts = self.instagram_post_repository.get_featured()
         return [InstagramPostResponse(**p.__dict__) for p in posts]
+
 
     def get_by_subcategory(self, subcategory_id: UUID) -> list[InstagramPostResponse]:
         if not self.decorated_cake_repository.get_by_id(subcategory_id):
@@ -71,13 +76,17 @@ class InstagramPostUsecase:
         posts = self.instagram_post_repository.get_by_subcategory(subcategory_id)
         return [InstagramPostResponse(**p.__dict__) for p in posts]
 
+
     def get_all(self) -> list[InstagramPostResponse]:
         posts = self.instagram_post_repository.get_all()
         return [InstagramPostResponse(**p.__dict__) for p in posts]
 
+
+
     def get_unclassified(self) -> list[InstagramPostResponse]:
         posts = self.instagram_post_repository.get_unclassified()
         return [InstagramPostResponse(**p.__dict__) for p in posts]
+
 
     def update_subcategory(self, post_id: UUID, request: UpdateSubcategoryRequest) -> InstagramPostResponse:
         if not self.decorated_cake_repository.get_by_id(request.subcategory_id):
@@ -92,6 +101,7 @@ class InstagramPostUsecase:
         logger.info("Post subcategory updated", extra={"post_id": post_id, "subcategory_id": request.subcategory_id})
         return InstagramPostResponse(**updated.__dict__)
 
+
     def delete(self, post_id: UUID) -> None:
         posts = self.instagram_post_repository.get_all()
         if not any(p.id == post_id for p in posts):
@@ -100,9 +110,11 @@ class InstagramPostUsecase:
         self.instagram_post_repository.delete(post_id)
         logger.info("Post deleted", extra={"post_id": post_id})
 
+
     def get_all_subcategories(self) -> list[DecoratedCakeResponse]:
         subcategories = self.decorated_cake_repository.get_all()
         return [DecoratedCakeResponse(**s.__dict__) for s in subcategories]
+
 
     def refresh_featured_status(self) -> None:
         now = datetime.now(timezone.utc)
@@ -111,6 +123,28 @@ class InstagramPostUsecase:
             if post.is_featured and post.featured_until < now:
                 self.instagram_post_repository.update_featured_status(post.id, False)
                 logger.info("Post featured status expired", extra={"post_id": post.id})
+
+
+    def create_manual_post(
+            self,
+            media_url: str,
+            subcategory_id: Optional[UUID] = None
+    ) -> InstagramPostResponse:
+
+        now = datetime.now(timezone.utc)
+        post = InstagramPost(
+            instagram_id=f"manual_{uuid_lib.uuid4().hex}",
+            caption=None,
+            media_url=media_url,
+            permalink=media_url,
+            subcategory_id=subcategory_id,
+            is_featured=False,
+            synced_at=now,
+            featured_until=now,
+        )
+        saved = self.instagram_post_repository.save(post)
+        logger.info("Manual post created", extra={"post_id": saved.id})
+        return InstagramPostResponse(**saved.__dict__)
 
     # ── Subcategory CRUD ──────────────────────────────────────────────────────
 
@@ -124,6 +158,7 @@ class InstagramPostUsecase:
         logger.info("Subcategory created", extra={"name": request.name})
         return DecoratedCakeResponse(**saved.__dict__)
 
+
     def update_subcategory_data(self, subcategory_id: UUID, request: DecoratedCakeRequest) -> DecoratedCakeResponse:
         existing = self.decorated_cake_repository.get_by_id(subcategory_id)
         if not existing:
@@ -135,6 +170,7 @@ class InstagramPostUsecase:
         updated = self.decorated_cake_repository.save(existing)
         logger.info("Subcategory updated", extra={"subcategory_id": subcategory_id})
         return DecoratedCakeResponse(**updated.__dict__)
+
 
     def delete_subcategory(self, subcategory_id: UUID) -> None:
         existing = self.decorated_cake_repository.get_by_id(subcategory_id)

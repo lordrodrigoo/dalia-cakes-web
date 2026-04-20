@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { getProducts, createProduct, updateProduct, deleteProduct } from '../../services/products'
 import { getCategories } from '../../services/categories'
 import { adminProdutosStyles as s } from '../../styles/adminProdutos.styles'
+import { uploadImage } from '../../services/upload'
 
 function slugify(text) {
   return text
@@ -90,36 +91,44 @@ export default function AdminProdutos() {
   }
 
   const handleSubmit = async () => {
-    if (!form.name) return setError('Nome é obrigatório.')
-    if (!form.price) return setError('Preço é obrigatório.')
-    if (!form.category_id) return setError('Categoria é obrigatória.')
-    if (!editing && !form.image) return setError('Imagem é obrigatória.')
+  if (!form.name) return setError('Nome é obrigatório.')
+  if (!form.price) return setError('Preço é obrigatório.')
+  if (!form.category_id) return setError('Categoria é obrigatória.')
+  if (!editing && !form.image) return setError('Imagem é obrigatória.')
 
-    setSaving(true)
-    setError('')
+  setSaving(true)
+  setError('')
 
-    const formData = new FormData()
-    formData.append('name', form.name)
-    formData.append('slug', form.slug)
-    formData.append('description', form.description)
-    formData.append('price', form.price)
-    formData.append('category_id', form.category_id)
-    if (form.image) formData.append('image', form.image)
+  try {
+    let image_url = form.previewUrl
 
-    try {
-      if (editing) {
-        await updateProduct(editing.id, formData)
-      } else {
-        await createProduct(formData)
-      }
-      await fetchAll()
-      closeModal()
-    } catch {
-      setError('Erro ao salvar. Tente novamente.')
-    } finally {
-      setSaving(false)
+    if (form.image) {
+      image_url = await uploadImage(form.image, 'products')
     }
+
+    const data = {
+      name: form.name,
+      slug: form.slug,
+      description: form.description,
+      price: parseFloat(form.price),
+      category_id: form.category_id,
+      image_url,
+    }
+
+    if (editing) {
+      await updateProduct(editing.id, data)
+    } else {
+      await createProduct(data)
+    }
+
+    await fetchAll()
+    closeModal()
+  } catch {
+    setError('Erro ao salvar. Tente novamente.')
+  } finally {
+    setSaving(false)
   }
+}
 
   const handleDelete = async (id) => {
     if (!confirm('Tem certeza que deseja excluir este produto?')) return

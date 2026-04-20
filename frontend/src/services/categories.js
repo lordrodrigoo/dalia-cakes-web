@@ -1,15 +1,9 @@
 import api from "./api"
 
 export const getCategories = () => api.get('/categories')
+export const getCategoryBySlug = (slug) => api.get(`/categories/slug/${slug}`)
+export const getCategoryById = (id) => api.get(`/categories/${id}`)
 
-export const getCategoryBySlug = (slug) => api.get(`/categories/${slug}`)
-
-export const createCategory = (formData) => api.post('/categories', formData, {
-  headers: { 'Content-Type': 'multipart/form-data' }
-})
-
-export const updateCategory = (id, formData) => api.put(`/categories/${id}`, formData, {
-  headers: { 'Content-Type': 'multipart/form-data' }
-})
-
+export const createCategory = (data) => api.post('/categories', data)
+export const updateCategory = (id, data) => api.put(`/categories/${id}`, data)
 export const deleteCategory = (id) => api.delete(`/categories/${id}`)

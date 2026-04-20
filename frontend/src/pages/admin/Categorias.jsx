@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../../services/categories'
 import { adminCategoriasStyles as s } from '../../styles/adminCategorias.styles'
+import { uploadImage } from '../../services/upload'
 
 function slugify(text) {
   return text
@@ -69,31 +70,35 @@ export default function AdminCategorias() {
   }
 
   const handleSubmit = async () => {
-    if (!form.name) return setError('Nome é obrigatório.')
-    if (!editing && !form.image) return setError('Imagem é obrigatória.')
+  if (!form.name) return setError('Nome é obrigatório.')
+  if (!editing && !form.image) return setError('Imagem é obrigatória.')
 
-    setSaving(true)
-    setError('')
+  setSaving(true)
+  setError('')
 
-    const formData = new FormData()
-    formData.append('name', form.name)
-    formData.append('slug', form.slug)
-    if (form.image) formData.append('image', form.image)
+  try {
+    let image_url = form.previewUrl
 
-    try {
-      if (editing) {
-        await updateCategory(editing.id, formData)
-      } else {
-        await createCategory(formData)
-      }
-      await fetchCategories()
-      closeModal()
-    } catch {
-      setError('Erro ao salvar. Tente novamente.')
-    } finally {
-      setSaving(false)
+    if (form.image) {
+      image_url = await uploadImage(form.image, 'categories')
     }
+
+    const data = { name: form.name, slug: form.slug, image_url }
+
+    if (editing) {
+      await updateCategory(editing.id, data)
+    } else {
+      await createCategory(data)
+    }
+
+    await fetchCategories()
+    closeModal()
+  } catch {
+    setError('Erro ao salvar. Tente novamente.')
+  } finally {
+    setSaving(false)
   }
+}
 
   const handleDelete = async (id) => {
     if (!confirm('Tem certeza que deseja excluir esta categoria?')) return
