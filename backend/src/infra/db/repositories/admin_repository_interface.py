@@ -9,7 +9,7 @@ from backend.src.domain.models.admin import Admin, AdminRole
 
 class AdminRepository(AdminRepositoryInterface):
     def __init__(self, db_connection: DBConnectionHandler):
-        self.session = db_connection.get_session()
+        self.session = db_connection.session
 
 
     def create_admin(self, user: Admin) -> Admin:

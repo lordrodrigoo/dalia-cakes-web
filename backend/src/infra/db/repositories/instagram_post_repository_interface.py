@@ -11,7 +11,7 @@ from backend.src.domain.models.instagram_post import InstagramPost
 
 class InstagramPostRepository(InstagramPostRepositoryInterface):
     def __init__(self, db_connection: DBConnectionHandler):
-        self.session = db_connection.get_session()
+        self.session = db_connection.session
 
     def save(self, post: InstagramPost) -> InstagramPost:
         entity = InstagramPostEntity(

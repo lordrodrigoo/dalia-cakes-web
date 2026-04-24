@@ -9,6 +9,10 @@ from backend.src.infra.db.settings.base import Base
 
 # ENTITIES IMPORT FIX
 from backend.src.infra.db.entities.admin import AdminEntity
+from backend.src.infra.db.entities.category import CategoryEntity
+from backend.src.infra.db.entities.product import ProductEntity
+from backend.src.infra.db.entities.decorated_cake import DecoratedCakeEntity
+from backend.src.infra.db.entities.instagram_post import InstagramPostEntity
 
 
 load_dotenv()

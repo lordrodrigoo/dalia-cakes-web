@@ -8,7 +8,7 @@ from backend.src.domain.models.decorated_cake import DecoratedCake
 
 class DecoratedCakeRepository(DecoratedCakeRepositoryInterface):
     def __init__(self, db_connection: DBConnectionHandler):
-        self.session = db_connection.get_session()
+        self.session = db_connection.session
 
     def save(self, decorated_cake: DecoratedCake) -> DecoratedCake:
         entity = self.session.query(DecoratedCakeEntity).filter_by(id=decorated_cake.id).first()

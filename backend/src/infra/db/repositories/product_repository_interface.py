@@ -8,7 +8,7 @@ from backend.src.domain.models.product import Product
 
 class ProductRepository(ProductRepositoryInterface):
     def __init__(self, db_connection: DBConnectionHandler):
-        self.session = db_connection.get_session()
+        self.session = db_connection.session
 
     def create_product(self, product: Product) -> Product:
         entity = ProductEntity(

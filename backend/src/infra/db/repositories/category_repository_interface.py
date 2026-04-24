@@ -7,7 +7,7 @@ from backend.src.domain.models.category import Category
 
 class CategoryRepository(CategoryRepositoryInterface):
     def __init__(self, db_connection: DBConnectionHandler):
-        self.session = db_connection.get_session()
+        self.session = db_connection.session
 
     def create_category(self, category: Category) -> Category:
         entity = CategoryEntity(

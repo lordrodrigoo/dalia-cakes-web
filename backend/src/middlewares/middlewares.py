@@ -28,7 +28,7 @@ def setup_middlewares(app: FastAPI):
         CORSMiddleware,
         allow_origins=[
             "http://localhost",
-            "http://localhost:3000",
+            "http://localhost:5173",
         ],
         allow_methods=["*"],
         allow_headers=["*"],
