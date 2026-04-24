@@ -1,5 +1,6 @@
 import { contatoStyles as s } from '../styles/contato.styles'
 
+
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER
 const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Olá! Gostaria de fazer um pedido 🎂')}`
 const IFOOD_URL = import.meta.env.VITE_IFOOD_URL
@@ -56,24 +57,7 @@ export default function Contato() {
             </div>
           </div>
 
-          <div className={s.btnGroup}>
-            <a
-              href={WHATSAPP_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={s.whatsappBtn}
-            >
-              💬 Encomendar pelo WhatsApp
-            </a>
-            <a
-              href={IFOOD_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={s.ifoodBtn}
-            >
-              🛵 Pedir pelo iFood
-            </a>
-          </div>
+          {/* Botões removidos conforme solicitado */}
 
         </div>
 
