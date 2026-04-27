@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../../services/categories'
 import { adminCategoriasStyles as s } from '../../styles/adminCategorias.styles'
 import { uploadImage } from '../../services/upload'
+import toast from 'react-hot-toast'
 
 function slugify(text) {
   return text
@@ -78,22 +79,21 @@ export default function AdminCategorias() {
 
   try {
     let image_url = form.previewUrl
-
     if (form.image) {
       image_url = await uploadImage(form.image, 'categories')
     }
-
     const data = { name: form.name, slug: form.slug, image_url }
-
     if (editing) {
       await updateCategory(editing.id, data)
+      toast.success('Categoria atualizada com sucesso!')
     } else {
       await createCategory(data)
+      toast.success('Categoria criada com sucesso!')
     }
-
     await fetchCategories()
     closeModal()
   } catch {
+    toast.error('Erro ao salvar categoria.')
     setError('Erro ao salvar. Tente novamente.')
   } finally {
     setSaving(false)
@@ -101,14 +101,15 @@ export default function AdminCategorias() {
 }
 
   const handleDelete = async (id) => {
-    if (!confirm('Tem certeza que deseja excluir esta categoria?')) return
-    try {
-      await deleteCategory(id)
-      await fetchCategories()
-    } catch {
-      alert('Erro ao excluir categoria.')
-    }
+  if (!confirm('Tem certeza que deseja excluir esta categoria?')) return
+  try {
+    await deleteCategory(id)
+    toast.success('Categoria excluída com sucesso!')
+    await fetchCategories()
+  } catch {
+    toast.error('Erro ao excluir categoria.')
   }
+}
 
   return (
     <div className={s.wrapper}>

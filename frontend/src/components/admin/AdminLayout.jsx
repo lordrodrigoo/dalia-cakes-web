@@ -3,6 +3,14 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { adminLayoutStyles as s } from '../../styles/adminLayout.styles'
 import { logout } from '../../services/auth'
 import logo from '../../assets/images/logo_home.png'
+import toast from 'react-hot-toast'
+
+
+const handleLogout = () => {
+  logout()
+  toast.success('Até logo!')
+  navigate('/login')
+}
 
 const navItems = [
   { to: "/admin", label: "Dashboard", icon: "📊", end: true },

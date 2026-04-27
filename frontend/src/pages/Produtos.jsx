@@ -10,7 +10,7 @@ const WHATSAPP_NUMBER = import.meta.env.VITE_BUSINESS_PHONE.replace(/\D/g, '')
 const IFOOD_URL = import.meta.env.VITE_IFOOD_URL
 
 function buildWhatsAppLink(productName) {
-  const message = encodeURIComponent(`Olá! Tenho interesse no produto: ${productName} 🎂`)
+  const message = encodeURIComponent(`Olá! Vi esse ${productName} no site, e gostaria de encomendar! 🎂`)
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`
 }
 

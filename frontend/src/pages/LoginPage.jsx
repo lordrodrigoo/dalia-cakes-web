@@ -4,7 +4,7 @@ import Login from '../components/Login';
 export default function LoginPage() {
   const navigate = useNavigate();
   const handleLogin = () => {
-    navigate('/');
+    navigate('/admin');
   };
   return <Login onLogin={handleLogin} />;
 }

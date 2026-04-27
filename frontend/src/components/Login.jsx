@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { login, saveToken } from '../services/auth'
 import { loginPageStyles as s } from '../styles/loginPage.styles'
 import logo from '../assets/images/logo_home.png'
+import toast from 'react-hot-toast'
 
 export default function Login({ onLogin }) {
   const [username, setUsername] = useState('')
@@ -16,9 +17,11 @@ export default function Login({ onLogin }) {
     setError('')
     try {
       const data = await login(username, password)
-      saveToken(data.access_token)
+      saveToken(data.access_token, data.refresh_token)
+      toast.success('Logado com sucesso!')
       if (onLogin) onLogin()
     } catch {
+      toast.error('Usuário ou senha inválidos.')
       setError('Usuário ou senha inválidos.')
     } finally {
       setLoading(false)
@@ -28,13 +31,10 @@ export default function Login({ onLogin }) {
   return (
     <div className={s.layout}>
       <form onSubmit={handleSubmit} className={s.form}>
-
         <div className={s.logoWrapper}>
           <img src={logo} alt="Dalia Bolos e Doces" className={s.logo} />
         </div>
-
         <h1 className={s.heading}>Login</h1>
-
         <div className={s.fieldWrapper}>
           <label className={s.label}>Usuário</label>
           <input
@@ -45,7 +45,6 @@ export default function Login({ onLogin }) {
             required
           />
         </div>
-
         <div className={s.fieldWrapper}>
           <label className={s.label}>Senha</label>
           <input
@@ -56,7 +55,6 @@ export default function Login({ onLogin }) {
             required
           />
         </div>
-
         <div className={s.row}>
           <div className={s.checkboxWrapper}>
             <input
@@ -70,14 +68,10 @@ export default function Login({ onLogin }) {
           </div>
           <a href="#" className={s.forgotLink}>Esqueceu a senha?</a>
         </div>
-
         {error && <p className={s.error}>{error}</p>}
-
         <button type="submit" className={s.button} disabled={loading}>
           {loading ? 'Entrando...' : 'Entrar'}
         </button>
-
-
       </form>
       <p className={s.bottomText}>
         <a href="/" className={s.signupLink}>← Voltar para o site</a>

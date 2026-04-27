@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getSubcategories, createSubcategory, updateSubcategory, deleteSubcategory } from '../../services/decoratedCakes'
 import { adminBolosDecoradosStyles as s } from '../../styles/adminBolosDecorados.styles'
+import toast from 'react-hot-toast'
 
 function slugify(text) {
   return text
@@ -78,38 +79,42 @@ export default function AdminBolosDecorados() {
   }
 
   const handleSubmit = async () => {
-    if (!form.name) return setError('Nome é obrigatório.')
-    if (!form.hashtag) return setError('Hashtag é obrigatória.')
+  if (!form.name) return setError('Nome é obrigatório.')
+  if (!form.hashtag) return setError('Hashtag é obrigatória.')
 
-    setSaving(true)
-    setError('')
+  setSaving(true)
+  setError('')
 
-    const data = { name: form.name, slug: form.slug, hashtag: form.hashtag }
+  const data = { name: form.name, slug: form.slug, hashtag: form.hashtag }
 
-    try {
-      if (editing) {
-        await updateSubcategory(editing.id, data)
-      } else {
-        await createSubcategory(data)
-      }
-      await fetchSubcategories()
-      closeModal()
-    } catch {
-      setError('Erro ao salvar. Tente novamente.')
-    } finally {
-      setSaving(false)
+  try {
+    if (editing) {
+      await updateSubcategory(editing.id, data)
+      toast.success('Subcategoria atualizada com sucesso!')
+    } else {
+      await createSubcategory(data)
+      toast.success('Subcategoria criada com sucesso!')
     }
+    await fetchSubcategories()
+    closeModal()
+  } catch {
+    toast.error('Erro ao salvar subcategoria.')
+    setError('Erro ao salvar. Tente novamente.')
+  } finally {
+    setSaving(false)
   }
+}
 
   const handleDelete = async (id) => {
-    if (!confirm('Tem certeza que deseja excluir esta subcategoria?')) return
-    try {
-      await deleteSubcategory(id)
-      await fetchSubcategories()
-    } catch {
-      alert('Erro ao excluir subcategoria.')
-    }
+  if (!confirm('Tem certeza que deseja excluir esta subcategoria?')) return
+  try {
+    await deleteSubcategory(id)
+    toast.success('Subcategoria excluída com sucesso!')
+    await fetchSubcategories()
+  } catch {
+    toast.error('Erro ao excluir subcategoria.')
   }
+}
 
   return (
     <div className={s.wrapper}>

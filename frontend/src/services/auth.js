@@ -7,9 +7,13 @@ export async function login(username, password) {
 }
 
 // Função para salvar token (pode ser adaptada para context ou redux)
-export function saveToken(token) {
-  localStorage.setItem('access_token', token);
+export function saveToken(token, refreshToken) {
+  localStorage.setItem('access_token', token)
+  if (refreshToken) {
+    localStorage.setItem('refresh_token', refreshToken)
+  }
 }
+
 
 export function getToken() {
   return localStorage.getItem('access_token');
@@ -17,4 +21,5 @@ export function getToken() {
 
 export function logout() {
   localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
 }

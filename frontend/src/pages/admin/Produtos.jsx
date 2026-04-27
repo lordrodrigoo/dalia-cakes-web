@@ -3,6 +3,7 @@ import { getProducts, createProduct, updateProduct, deleteProduct } from '../../
 import { getCategories } from '../../services/categories'
 import { adminProdutosStyles as s } from '../../styles/adminProdutos.styles'
 import { uploadImage } from '../../services/upload'
+import toast from 'react-hot-toast'
 
 function slugify(text) {
   return text
@@ -101,11 +102,9 @@ export default function AdminProdutos() {
 
   try {
     let image_url = form.previewUrl
-
     if (form.image) {
       image_url = await uploadImage(form.image, 'products')
     }
-
     const data = {
       name: form.name,
       slug: form.slug,
@@ -114,34 +113,37 @@ export default function AdminProdutos() {
       category_id: form.category_id,
       image_url,
     }
-
     if (editing) {
       await updateProduct(editing.id, data)
+      toast.success('Produto atualizado com sucesso!')
     } else {
       await createProduct(data)
+      toast.success('Produto criado com sucesso!')
     }
-
     await fetchAll()
     closeModal()
   } catch {
+    toast.error('Erro ao salvar produto.')
     setError('Erro ao salvar. Tente novamente.')
   } finally {
     setSaving(false)
   }
 }
 
+
   const handleDelete = async (id) => {
-    if (!confirm('Tem certeza que deseja excluir este produto?')) return
-    try {
-      await deleteProduct(id)
-      await fetchAll()
-    } catch {
-      alert('Erro ao excluir produto.')
-    }
+  if (!confirm('Tem certeza que deseja excluir este produto?')) return
+  try {
+    await deleteProduct(id)
+    toast.success('Produto excluído com sucesso!')
+    await fetchAll()
+  } catch {
+    toast.error('Erro ao excluir produto.')
   }
+}
 
   const filtered = filterCategory
-    ? products.filter(p => p.category_id === Number(filterCategory))
+    ? products.filter(p => p.category_id === filterCategory)
     : products
 
   const getCategoryName = (id) => categories.find(c => c.id === id)?.name || '-'

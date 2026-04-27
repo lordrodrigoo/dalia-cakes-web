@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { getAllPosts, deletePost, updatePostSubcategory, createManualPost } from '../../services/instagram'
 import { getSubcategories } from '../../services/decoratedCakes'
 import { adminInstagramStyles as s } from '../../styles/adminInstagram.styles'
+import toast from 'react-hot-toast'
 
 export default function AdminInstagram() {
   const [posts, setPosts] = useState([])
@@ -51,23 +52,25 @@ export default function AdminInstagram() {
   }
 
   const handleUploadSubmit = async () => {
-    if (!uploadForm.image) return setUploadError('Selecione uma imagem.')
-    setUploading(true)
-    setUploadError('')
-    try {
-      const formData = new FormData()
-      formData.append('file', uploadForm.image)
-      if (uploadForm.subcategory_id) {
-        formData.append('subcategory_id', uploadForm.subcategory_id)
-      }
-      await createManualPost(formData)
-      await fetchAll()
-      setUploadModalOpen(false)
-    } catch {
-      setUploadError('Erro ao fazer upload. Tente novamente.')
-    } finally {
-      setUploading(false)
+  if (!uploadForm.image) return setUploadError('Selecione uma imagem.')
+  setUploading(true)
+  setUploadError('')
+  try {
+    const formData = new FormData()
+    formData.append('file', uploadForm.image)
+    if (uploadForm.subcategory_id) {
+      formData.append('subcategory_id', uploadForm.subcategory_id)
     }
+    await createManualPost(formData)
+    toast.success('Foto enviada com sucesso!')
+    await fetchAll()
+    setUploadModalOpen(false)
+  } catch {
+    toast.error('Erro ao enviar foto.')
+    setUploadError('Erro ao fazer upload. Tente novamente.')
+  } finally {
+    setUploading(false)
+  }
   }
 
   // Classificar post
@@ -79,29 +82,32 @@ export default function AdminInstagram() {
   }
 
   const handleClassifySubmit = async () => {
-    if (!classifySubcategoryId) return setClassifyError('Selecione uma subcategoria.')
-    setClassifying(true)
-    setClassifyError('')
-    try {
-      await updatePostSubcategory(classifyPost.id, classifySubcategoryId)
-      await fetchAll()
-      setClassifyModalOpen(false)
-    } catch {
-      setClassifyError('Erro ao classificar. Tente novamente.')
-    } finally {
-      setClassifying(false)
-    }
+  if (!classifySubcategoryId) return setClassifyError('Selecione uma subcategoria.')
+  setClassifying(true)
+  setClassifyError('')
+  try {
+    await updatePostSubcategory(classifyPost.id, classifySubcategoryId)
+    toast.success('Post classificado com sucesso!')
+    await fetchAll()
+    setClassifyModalOpen(false)
+  } catch {
+    toast.error('Erro ao classificar post.')
+    setClassifyError('Erro ao classificar. Tente novamente.')
+  } finally {
+    setClassifying(false)
+  }
   }
 
   // Deletar
   const handleDelete = async (id) => {
-    if (!confirm('Tem certeza que deseja excluir este post?')) return
-    try {
-      await deletePost(id)
-      await fetchAll()
-    } catch {
-      alert('Erro ao excluir post.')
-    }
+  if (!confirm('Tem certeza que deseja excluir este post?')) return
+  try {
+    await deletePost(id)
+    toast.success('Post excluído com sucesso!')
+    await fetchAll()
+  } catch {
+    toast.error('Erro ao excluir post.')
+  }
   }
 
   const getSubcategoryName = (id) => subcategories.find(s => s.id === id)?.name || null
