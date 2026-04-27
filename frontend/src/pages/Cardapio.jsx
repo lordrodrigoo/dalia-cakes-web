@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { getCategories } from '../services/categories'
 import { getProductsByCategory } from '../services/products'
 import { cardapioStyles as s } from '../styles/cardapio.styles'
+import whatsappIcon from '../assets/icons/whatsapp.png'
+import ifoodIcon from '../assets/icons/Ifood_logo_sem_fundo.png'
 
 const WHATSAPP_NUMBER = import.meta.env.VITE_BUSINESS_PHONE.replace(/\D/g, '')
 const IFOOD_URL = import.meta.env.VITE_IFOOD_URL
@@ -40,14 +42,16 @@ export default function Cardapio() {
     fetchAll()
   }, [])
 
-  if (loading) return <p className={s.empty}>Carregando...</p>
-  if (sections.length === 0) return <p className={s.empty}>Nenhum produto encontrado.</p>
+  if (loading) return <p className={s.empty}>Carregando...</p>;
+  if (sections.length === 0) return <p className={s.empty}>Nenhum produto cadastrado.</p>;
 
   return (
     <div className={s.wrapper}>
       {sections.map(({ category, products }) => (
         <section key={category.id} className={s.section}>
-          <h2 className={s.categoryTitle}>{category.name}</h2>
+          <div className={s.header}>
+            <h1 className={s.heading}>{category.name}</h1>
+          </div>
           <div className={s.grid}>
             {products.map(product => (
               <div
@@ -87,7 +91,8 @@ export default function Cardapio() {
                   rel="noopener noreferrer"
                   className={s.whatsappBtn}
                 >
-                  🟢 Encomendar pelo WhatsApp
+                  <img src={whatsappIcon} alt="WhatsApp" className={s.iconBtn} />
+                  Encomendar pelo WhatsApp
                 </a>
                 <a
                   href={IFOOD_URL}
@@ -95,7 +100,8 @@ export default function Cardapio() {
                   rel="noopener noreferrer"
                   className={s.ifoodBtn}
                 >
-                  🛵 Ver no iFood
+                  <img src={ifoodIcon} alt="iFood" className={s.iconBtn} />
+                  Ver no iFood
                 </a>
               </div>
             </div>

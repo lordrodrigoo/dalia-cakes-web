@@ -26,7 +26,7 @@ def create_product(
     product_usecase: ProductUsecase = Depends(get_product_usecase),
 ):
     """Authenticated endpoint to create a new product."""
-    logger.info("Creating product", extra={"name": product_request.name})
+    logger.info("Creating product", extra={"product_name": product_request.name})
     product = product_usecase.create_product(product_request)
     response.headers["Location"] = f"{PRODUCT_PREFIX}/{product.id}"
     return product

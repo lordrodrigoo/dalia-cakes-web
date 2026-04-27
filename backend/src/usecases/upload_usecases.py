@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 IMAGE_SIZES = {
     "products": (800, 800),
-    "categories": (1200, 600),
+    "categories": (1200, 800),
 }
 ALLOWED_FOLDERS = set(IMAGE_SIZES.keys())
 ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/png", "image/webp"}

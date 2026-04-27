@@ -27,7 +27,7 @@ def create_category(
 ):
 
     """Authenticated endpoint to create a new category."""
-    logger.info("Creating category", extra={"name": category_request.name})
+    logger.info("Creating category", extra={"category_name": category_request.name})
     category = category_usecase.create_category(category_request)
     response.headers['Location'] = f"{CATEGORY_PREFIX}/{category.id}"
     return category

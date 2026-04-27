@@ -18,8 +18,9 @@ export const productCardStyles = {
   modalName: "text-2xl font-bold text-gray-900",
   modalPrice: "text-xl font-bold text-pink-600",
   modalDesc: "text-sm text-gray-600 leading-relaxed",
-  modalActions: "flex flex-col sm:flex-row gap-3 mt-2",
-  whatsappBtn: "flex-1 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-xl transition-colors text-center text-sm",
-  ifoodBtn: "flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-4 rounded-xl transition-colors text-center text-sm",
+  modalActions: "flex flex-col sm:flex-row gap-2 mt-1",
+  whatsappBtn: "flex- bg-green-600 hover:bg-green-500 text-white font-semibold py-3 px-4 rounded-xl transition-colors text-center text-sm items-center justify-center gap-1",
+  ifoodBtn: "flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-4 rounded-xl transition-colors text-center text-sm flex items-center justify-center gap-2",
+    iconBtn: "inline-block h-5 w-5 align-middle mr-2 sm:mr-1",
   modalClose: "absolute top-4 right-4 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow text-gray-600 hover:text-gray-900 transition-colors",
 }
