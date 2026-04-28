@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "build": "echo 'No frontend build in root. Use npm run build in frontend/ if needed.'"
+  },
   "dependencies": {
     "keen-slider": "^6.8.6"
   },
