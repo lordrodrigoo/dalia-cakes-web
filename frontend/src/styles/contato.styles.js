@@ -20,6 +20,10 @@ export const contatoStyles = {
   hoursDays: "text-gray-600 text-sm",
   hoursTime: "text-gray-800 font-medium text-sm",
 
+  // Botão WhatsApp
+  whatsappBtn: "inline-flex items-center gap-3 px-6 py-3 bg-green-400 hover:bg-green-500 active:bg-green-700 text-white font-semibold rounded-full shadow-md hover:shadow-lg transition-all duration-200 no-underline w-fit",
+  whatsappBtnIcon: "w-6 h-6 object-contain",
+
   // Mapa
   mapWrapper: "rounded-2xl overflow-hidden shadow border border-gray-100 h-full min-h-[400px]",
   map: "w-full h-full min-h-[400px]",

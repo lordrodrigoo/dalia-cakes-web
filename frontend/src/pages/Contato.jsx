@@ -1,4 +1,5 @@
 import { contatoStyles as s } from '../styles/contato.styles'
+import whatsappIcon from '../assets/icons/whatsapp.png'
 
 
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER
@@ -42,7 +43,15 @@ export default function Contato() {
 
           <div className={s.infoCard}>
             <span className={s.infoLabel}>WhatsApp</span>
-            <span className={s.infoValue}>📱 (11) 99546-9412</span>
+            <a
+              href={WHATSAPP_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={s.whatsappBtn}
+            >
+              <img src={whatsappIcon} alt="WhatsApp" className={s.whatsappBtnIcon} />
+              Falar no WhatsApp
+            </a>
           </div>
 
           <div className={s.infoCard}>

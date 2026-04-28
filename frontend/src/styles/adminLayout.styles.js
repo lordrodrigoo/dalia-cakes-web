@@ -9,9 +9,9 @@ export const adminLayoutStyles = {
   overlay: "fixed inset-0 z-40 bg-black/50 md:hidden",
   
   // Sidebar header
-  sidebarHeader: "flex items-center justify-between px-6 py-5 border-b border-zinc-800",
-  sidebarLogo: "h-8 w-auto object-contain brightness-0 invert",
-  sidebarClose: "md:hidden text-zinc-400 hover:text-white transition-colors",
+  sidebarHeader: "relative flex items-center justify-center px-6 py-4 border-b border-zinc-800",
+  sidebarLogo: "h-20 md:h-32 w-auto object-contain",
+  sidebarClose: "md:hidden absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white transition-colors text-lg",
 
   // Nav
   nav: "flex-1 px-4 py-6 flex flex-col gap-1",
@@ -32,7 +32,7 @@ export const adminLayoutStyles = {
   hamburger: "text-gray-700",
 
   // Content area
-  content: "flex-1 p-6",
+  content: "flex-1 p-4 md:p-6",
 
   // back to site
   siteLink: "flex items-center gap-3 px-4 py-3 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all text-sm font-medium w-full",

@@ -2,8 +2,8 @@ export const adminProdutosStyles = {
   wrapper: "flex flex-col gap-6",
 
   // Header
-  header: "flex items-center justify-between",
-  heading: "text-2xl font-bold text-gray-900",
+  header: "flex flex-wrap items-center justify-between gap-3",
+  heading: "text-xl md:text-2xl font-bold text-gray-900",
   addBtn: "flex items-center gap-2 bg-zinc-950 text-white px-4 py-2 rounded-lg hover:bg-zinc-800 transition-colors text-sm font-semibold",
 
   // Filtro
@@ -11,7 +11,7 @@ export const adminProdutosStyles = {
   select: "border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 transition bg-white",
 
   // Tabela
-  tableWrapper: "bg-white rounded-xl border border-gray-200 overflow-hidden",
+  tableWrapper: "bg-white rounded-xl border border-gray-200 overflow-x-auto",
   table: "w-full text-sm",
   thead: "bg-gray-50 border-b border-gray-200",
   th: "px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider",

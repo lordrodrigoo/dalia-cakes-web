@@ -17,7 +17,7 @@ export default function WhatsAppButton({
       className={`${s.btn} ${className}`}
       {...props}
     >
-      <img src={whatsappIcon} alt="WhatsApp" className={s.icon} />
+      <img src={whatsappIcon} alt="WhatsApp" className={s.icon} style={{ filter: 'brightness(0) saturate(100%) invert(58%) sepia(93%) saturate(401%) hue-rotate(103deg) brightness(97%) contrast(91%)' }} />
     </a>
   )
 }

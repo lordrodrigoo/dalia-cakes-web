@@ -180,8 +180,8 @@ export default function AdminProdutos() {
               <tr>
                 <th className={s.th}>Imagem</th>
                 <th className={s.th}>Nome</th>
-                <th className={s.th}>Categoria</th>
-                <th className={s.th}>Preço</th>
+                <th className={`${s.th} hidden sm:table-cell`}>Categoria</th>
+                <th className={`${s.th} hidden sm:table-cell`}>Preço</th>
                 <th className={s.th}>Ações</th>
               </tr>
             </thead>
@@ -192,8 +192,8 @@ export default function AdminProdutos() {
                     {prod.image_url && <img src={prod.image_url} alt={prod.name} className={s.img} />}
                   </td>
                   <td className={s.td}>{prod.name}</td>
-                  <td className={s.td}>{getCategoryName(prod.category_id)}</td>
-                  <td className={s.td}>R$ {Number(prod.price).toFixed(2)}</td>
+                  <td className={`${s.td} hidden sm:table-cell`}>{getCategoryName(prod.category_id)}</td>
+                  <td className={`${s.td} hidden sm:table-cell`}>R$ {Number(prod.price).toFixed(2)}</td>
                   <td className={s.td}>
                     <div className={s.actions}>
                       <button className={s.editBtn} onClick={() => openEdit(prod)}>Editar</button>

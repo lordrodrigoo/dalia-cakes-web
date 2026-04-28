@@ -23,6 +23,11 @@ export const sobreStyles = {
   differentialTitle: "font-semibold text-gray-800",
   differentialText: "text-lg text-gray-500",
 
+  // Contato
+  contactSection: "flex flex-col items-center gap-4 bg-pink-50 rounded-2xl p-8 text-center",
+  contactTitle: "text-2xl font-bold text-gray-900",
+  contactText: "text-gray-600 text-lg",
+
   // Horários
   hoursSection: "flex flex-col gap-4",
   hoursTitle: "text-2xl font-bold text-gray-900",

@@ -134,8 +134,8 @@ export default function AdminBolosDecorados() {
             <thead className={s.thead}>
               <tr>
                 <th className={s.th}>Nome</th>
-                <th className={s.th}>Slug</th>
-                <th className={s.th}>Hashtag</th>
+                <th className={`${s.th} hidden sm:table-cell`}>Slug</th>
+                <th className={`${s.th} hidden sm:table-cell`}>Hashtag</th>
                 <th className={s.th}>Ações</th>
               </tr>
             </thead>
@@ -143,8 +143,8 @@ export default function AdminBolosDecorados() {
               {subcategories.map((sub) => (
                 <tr key={sub.id} className={s.tr}>
                   <td className={s.td}>{sub.name}</td>
-                  <td className={s.td}>{sub.slug}</td>
-                  <td className={s.td}>#{sub.hashtag}</td>
+                  <td className={`${s.td} hidden sm:table-cell`}>{sub.slug}</td>
+                  <td className={`${s.td} hidden sm:table-cell`}>#{sub.hashtag}</td>
                   <td className={s.td}>
                     <div className={s.actions}>
                       <button className={s.editBtn} onClick={() => openEdit(sub)}>Editar</button>

@@ -132,7 +132,7 @@ export default function AdminCategorias() {
               <tr>
                 <th className={s.th}>Imagem</th>
                 <th className={s.th}>Nome</th>
-                <th className={s.th}>Slug</th>
+                <th className={`${s.th} hidden sm:table-cell`}>Slug</th>
                 <th className={s.th}>Ações</th>
               </tr>
             </thead>
@@ -143,7 +143,7 @@ export default function AdminCategorias() {
                     {cat.image_url && <img src={cat.image_url} alt={cat.name} className={s.img} />}
                   </td>
                   <td className={s.td}>{cat.name}</td>
-                  <td className={s.td}>{cat.slug}</td>
+                  <td className={`${s.td} hidden sm:table-cell`}>{cat.slug}</td>
                   <td className={s.td}>
                     <div className={s.actions}>
                       <button className={s.editBtn} onClick={() => openEdit(cat)}>Editar</button>
