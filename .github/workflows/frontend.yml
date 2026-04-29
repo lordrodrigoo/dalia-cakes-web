@@ -1,0 +1,236 @@
+# ==============================================================================
+# DEPLOY PIPELINE — Dalia Cakes Frontend
+# ==============================================================================
+#
+# PIPELINE STAGES:
+#
+#   SOURCE  →  BUILD  →  DEPLOY
+#
+#   [lint]           ESLint static analysis
+#   [build-image]    Validates Docker image builds correctly (no push)
+#   [publish-image]  Publishes image to GHCR tagged with commit SHA
+#   [deploy-ec2]     Deploys to EC2 via SSH with health check and rollback
+#
+# ==============================================================================
+
+name: Frontend — Deploy Pipeline
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - 'Dockerfile.frontend'
+      - 'nginx.conf'
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - 'Dockerfile.frontend'
+      - 'nginx.conf'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: deploy-frontend-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository_owner }}/dalia-cakes-frontend
+  NODE_VERSION: "20"
+
+# ==============================================================================
+# STAGE: SOURCE
+# ==============================================================================
+
+jobs:
+
+  # ----------------------------------------------------------------------------
+  # Lint
+  # ----------------------------------------------------------------------------
+  lint:
+    name: Source — Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: frontend
+
+      - name: Run ESLint
+        run: npm run lint
+        working-directory: frontend
+
+# ==============================================================================
+# STAGE: BUILD
+# ==============================================================================
+
+  build-image:
+    name: Build — Validate Image
+    runs-on: ubuntu-latest
+    needs: lint
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image (no push)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.frontend
+          push: false
+          tags: local/dalia-cakes-frontend:ci-check
+          build-args: |
+            VITE_API_URL=/api/v1
+            VITE_BUSINESS_PHONE=${{ secrets.VITE_BUSINESS_PHONE }}
+            VITE_WHATSAPP_NUMBER=${{ secrets.VITE_WHATSAPP_NUMBER }}
+            VITE_IFOOD_URL=${{ secrets.VITE_IFOOD_URL }}
+            VITE_ADDRESS=${{ secrets.VITE_ADDRESS }}
+            VITE_MAPS_LINK=${{ secrets.VITE_MAPS_LINK }}
+            VITE_MAPS_EMBED=${{ secrets.VITE_MAPS_EMBED }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ----------------------------------------------------------------------------
+  # Publish image to GHCR (main branch only)
+  # ----------------------------------------------------------------------------
+  publish-image:
+    name: Build — Publish Image
+    runs-on: ubuntu-latest
+    needs: build-image
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    outputs:
+      image_tag: ${{ steps.vars.outputs.image_tag }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Define image tag
+        id: vars
+        run: echo "image_tag=sha-${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.frontend
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.image_tag }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          build-args: |
+            VITE_API_URL=/api/v1
+            VITE_BUSINESS_PHONE=${{ secrets.VITE_BUSINESS_PHONE }}
+            VITE_WHATSAPP_NUMBER=${{ secrets.VITE_WHATSAPP_NUMBER }}
+            VITE_IFOOD_URL=${{ secrets.VITE_IFOOD_URL }}
+            VITE_ADDRESS=${{ secrets.VITE_ADDRESS }}
+            VITE_MAPS_LINK=${{ secrets.VITE_MAPS_LINK }}
+            VITE_MAPS_EMBED=${{ secrets.VITE_MAPS_EMBED }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+# ==============================================================================
+# STAGE: DEPLOY
+# ==============================================================================
+
+  deploy-ec2:
+    name: Deploy — EC2
+    runs-on: ubuntu-latest
+    needs: publish-image
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          FRONTEND_IMAGE: "ghcr.io/${{ github.repository_owner }}/dalia-cakes-frontend:${{ needs.publish-image.outputs.image_tag }}"
+          GHCR_PAT: ${{ secrets.CONTAINER_REGISTRY_TOKEN }}
+          GHCR_USER: ${{ secrets.CONTAINER_REGISTRY_USERNAME }}
+          DEPLOY_PATH: ${{ secrets.EC2_DEPLOY_PATH }}
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          envs: FRONTEND_IMAGE,GHCR_PAT,GHCR_USER,DEPLOY_PATH
+          script: |
+            set -Eeuo pipefail
+            cd "$DEPLOY_PATH"
+            echo "$GHCR_PAT" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+            docker compose pull frontend
+            PREV_IMAGE=$(docker inspect --format='{{.Config.Image}}' dalia_cakes_frontend 2>/dev/null || true)
+            rollback() {
+              echo "Deploy failed. Starting rollback..."
+              if [ -n "$PREV_IMAGE" ]; then
+                export FRONTEND_IMAGE="$PREV_IMAGE"
+                docker compose up -d frontend
+                echo "Rollback completed: $PREV_IMAGE"
+              else
+                echo "No previous image found — skipping rollback (first deploy)."
+              fi
+            }
+            trap rollback ERR
+            export FRONTEND_IMAGE="$FRONTEND_IMAGE"
+            docker compose up -d --remove-orphans frontend
+            echo "Waiting for frontend to be ready..."
+            for i in $(seq 1 5); do
+              if curl -fsS http://localhost:80 >/dev/null; then
+                echo "Health check passed"
+                break
+              fi
+              if [ "$i" -eq 5 ]; then
+                echo "Health check failed after 5 attempts"
+                exit 1
+              fi
+              echo "Attempt $i/5 failed — retrying in 5s..."
+              sleep 5
+            done
+            docker image prune -f
+            echo "Deploy complete: $FRONTEND_IMAGE"
+
+      - name: Notify failure by email
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "[Dalia Cakes] Frontend deploy failed!"
+          to: ${{ secrets.NOTIFY_EMAIL }}
+          from: "Dalia Cakes Deploy <no-reply@daliacakes.com>"
+          body: |
+            Frontend deploy failed!
+            Commit: ${{ github.sha }}
+            Author: ${{ github.actor }}
+            Logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
