@@ -2,18 +2,16 @@ import { useState, useEffect } from 'react'
 import { getCategories } from '../services/categories'
 import { getProductsByCategory } from '../services/products'
 import { cardapioStyles as s } from '../styles/cardapio.styles'
+import { buildProductOrderLink } from '../utils/whatsapp'
+import { useSEO } from '../hooks/useSEO'
 import whatsappIcon from '../assets/icons/whatsapp.png'
 import ifoodIcon from '../assets/icons/Ifood_logo_sem_fundo.png'
 
-const WHATSAPP_NUMBER = import.meta.env.VITE_BUSINESS_PHONE.replace(/\D/g, '')
 const IFOOD_URL = import.meta.env.VITE_IFOOD_URL
 
-function buildWhatsAppLink(productName) {
-  const message = encodeURIComponent(`Olá! Tenho interesse no produto: ${productName} 🎂`)
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`
-}
-
 export default function Cardapio() {
+  useSEO({ title: 'Cardapio', description: 'Veja nosso cardapio completo de bolos decorados, doces e muito mais.' })
+
   const [sections, setSections] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedProduct, setSelectedProduct] = useState(null)
@@ -50,7 +48,7 @@ export default function Cardapio() {
       {sections.map(({ category, products }) => (
         <section key={category.id} className={s.section}>
           <div className={s.header}>
-            <h1 className={s.heading}>{category.name}</h1>
+            <h2 className={s.heading}>{category.name}</h2>
           </div>
           <div className={s.grid}>
             {products.map(product => (
@@ -59,7 +57,7 @@ export default function Cardapio() {
                 className={s.card}
                 onClick={() => setSelectedProduct(product)}
               >
-                <div className="overflow-hidden">
+                <div className={s.cardImgWrapper}>
                   <img src={product.image_url} alt={product.name} className={s.cardImg} />
                 </div>
                 <div className={s.cardBody}>
@@ -86,7 +84,7 @@ export default function Cardapio() {
               )}
               <div className={s.modalActions}>
                 <a
-                  href={buildWhatsAppLink(selectedProduct.name)}
+                  href={buildProductOrderLink(selectedProduct.name)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={s.whatsappBtn}

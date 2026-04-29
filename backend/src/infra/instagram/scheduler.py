@@ -1,27 +1,26 @@
 import logging
-import os
 from apscheduler.schedulers.background import BackgroundScheduler
 from backend.src.infra.db.settings.connection import DBConnectionHandler
 from backend.src.infra.db.repositories.instagram_post_repository_interface import InstagramPostRepository
 from backend.src.infra.db.repositories.decorated_cake_repository_interface import DecoratedCakeRepository
+from backend.src.infra.db.repositories.app_config_repository import AppConfigRepository
 from backend.src.usecases.instagram_usecases import InstagramPostUsecase
 from backend.src.infra.instagram.instagram_client import fetch_instagram_posts, refresh_instagram_token
 from backend.src.config.settings import settings
 
 logger = logging.getLogger(__name__)
 
-# How many days before expiry to trigger a proactive token refresh
-TOKEN_REFRESH_THRESHOLD_DAYS = 10
+INSTAGRAM_TOKEN_KEY = "instagram_access_token"
 
 
 def refresh_token_job() -> None:
     logger.info("Running Instagram token refresh job")
     new_token = refresh_instagram_token(settings.INSTAGRAM_ACCESS_TOKEN)
     if new_token:
-        # Persist updated token to environment so next sync uses it
-        os.environ["INSTAGRAM_ACCESS_TOKEN"] = new_token
         settings.INSTAGRAM_ACCESS_TOKEN = new_token
-        logger.info("Instagram token updated in memory")
+        with DBConnectionHandler() as db:
+            AppConfigRepository(db).set(INSTAGRAM_TOKEN_KEY, new_token)
+        logger.info("Instagram token refreshed and persisted to database")
     else:
         logger.warning("Instagram token refresh job failed — token may expire soon")
 

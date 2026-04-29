@@ -3,20 +3,17 @@ import { useParams } from 'react-router-dom'
 import { getCategoryBySlug } from '../services/categories'
 import { getProductsByCategory } from '../services/products'
 import { produtosStyles as s } from '../styles/produtos.styles'
+import { buildProductOrderLink } from '../utils/whatsapp'
+import { useSEO } from '../hooks/useSEO'
 import whatsappIcon from '../assets/icons/whatsapp.png'
 import ifoodIcon from '../assets/icons/Ifood_logo_sem_fundo.png'
 
-const WHATSAPP_NUMBER = import.meta.env.VITE_BUSINESS_PHONE.replace(/\D/g, '')
 const IFOOD_URL = import.meta.env.VITE_IFOOD_URL
-
-function buildWhatsAppLink(productName) {
-  const message = encodeURIComponent(`Olá! Vi esse ${productName} no site, e gostaria de encomendar! 🎂`)
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`
-}
 
 export default function Produtos() {
   const { categoriaSlug } = useParams()
   const [category, setCategory] = useState(null)
+  useSEO({ title: category?.name || 'Produtos', description: category ? `Veja nossos produtos de ${category.name}` : undefined })
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedProduct, setSelectedProduct] = useState(null)
@@ -82,7 +79,7 @@ export default function Produtos() {
               )}
               <div className={s.modalActions}>
                 <a
-                  href={buildWhatsAppLink(selectedProduct.name)}
+                  href={buildProductOrderLink(selectedProduct.name)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={s.whatsappBtn}

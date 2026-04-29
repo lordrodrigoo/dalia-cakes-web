@@ -1,5 +1,6 @@
 import { sobreStyles as s } from '../styles/sobre.styles'
 import caricatura from '../assets/images/caricatura_dalia.jpeg'
+import { useSEO } from '../hooks/useSEO'
 
 const diferenciais = [
   {
@@ -26,6 +27,8 @@ const hours = [
 ]
 
 export default function Sobre() {
+  useSEO({ title: 'Sobre nos', description: 'Conheca a historia da Confeitaria da Dalia, feita com amor e dedicacao.' })
+
   return (
     <div className={s.wrapper}>
 

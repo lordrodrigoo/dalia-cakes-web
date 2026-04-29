@@ -211,7 +211,7 @@ def fake_decorated_cake_domain():
         id=uuid4(),
         name="Feminino",
         slug="feminino",
-        hashtag="boloFeminino",
+        hashtag="feminino",
         created_at=datetime.now(),
         updated_at=datetime.now(),
     )
@@ -223,7 +223,7 @@ def fake_instagram_post_domain(fake_decorated_cake_domain):
     return InstagramPost(
         id=uuid4(),
         instagram_id="123456789",
-        caption="Bolo lindo #boloFeminino",
+        caption="Bolo lindo #feminino",
         media_url="https://example.com/img.jpg",
         permalink="https://instagram.com/p/abc",
         subcategory_id=fake_decorated_cake_domain.id,

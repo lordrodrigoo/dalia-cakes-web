@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { getSubcategories, getPostsBySubcategory } from '../services/decoratedCakes'
 import { bolosDecoradosStyles as s } from '../styles/bolosDecorados.styles'
+import { useSEO } from '../hooks/useSEO'
 
 export default function BolosDecorados() {
+  useSEO({ title: 'Bolos Decorados', description: 'Veja nossa galeria de bolos decorados artesanais: femininos, masculinos, infantis e muito mais.' })
   const [subcategories, setSubcategories] = useState([])
   const [activeTab, setActiveTab] = useState(null)
   const [posts, setPosts] = useState([])

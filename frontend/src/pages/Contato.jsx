@@ -1,5 +1,6 @@
 import { contatoStyles as s } from '../styles/contato.styles'
 import whatsappIcon from '../assets/icons/whatsapp.png'
+import { useSEO } from '../hooks/useSEO'
 
 
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER
@@ -17,6 +18,8 @@ const hours = [
 ]
 
 export default function Contato() {
+  useSEO({ title: 'Contato', description: 'Entre em contato com a Confeitaria da Dalia pelo WhatsApp ou visite nossa loja.' })
+
   return (
     <div className={s.wrapper}>
       <div>

@@ -15,12 +15,12 @@ from backend.src.exceptions.exception_handlers_instagram import (
 
 def test_sync_post_new_post(instagram_usecase, instagram_post_repository_mock, decorated_cake_repository_mock, fake_instagram_post_domain, fake_decorated_cake_domain):
     instagram_post_repository_mock.get_by_instagram_id.return_value = None
-    decorated_cake_repository_mock.get_by_hashtag.return_value = fake_decorated_cake_domain
+    decorated_cake_repository_mock.get_all.return_value = [fake_decorated_cake_domain]
     instagram_post_repository_mock.save.return_value = fake_instagram_post_domain
 
     result = instagram_usecase.sync_post(
         instagram_id="123456789",
-        caption="Bolo lindo #boloFeminino",
+        caption="Bolo lindo #feminino",
         media_url="https://example.com/img.jpg",
         permalink="https://instagram.com/p/abc",
     )
@@ -34,7 +34,7 @@ def test_sync_post_already_exists(instagram_usecase, instagram_post_repository_m
 
     result = instagram_usecase.sync_post(
         instagram_id="123456789",
-        caption="Bolo lindo #boloFeminino",
+        caption="Bolo lindo #feminino",
         media_url="https://example.com/img.jpg",
         permalink="https://instagram.com/p/abc",
     )
@@ -43,20 +43,21 @@ def test_sync_post_already_exists(instagram_usecase, instagram_post_repository_m
     instagram_post_repository_mock.save.assert_not_called()
 
 
-def test_sync_post_no_matching_hashtag(instagram_usecase, instagram_post_repository_mock, decorated_cake_repository_mock, fake_instagram_post_domain):
+def test_sync_post_no_matching_hashtag(instagram_usecase, instagram_post_repository_mock, decorated_cake_repository_mock, fake_instagram_post_domain, fake_decorated_cake_domain):
     instagram_post_repository_mock.get_by_instagram_id.return_value = None
-    decorated_cake_repository_mock.get_by_hashtag.return_value = None
+    decorated_cake_repository_mock.get_all.return_value = [fake_decorated_cake_domain]
     instagram_post_repository_mock.save.return_value = fake_instagram_post_domain
 
     result = instagram_usecase.sync_post(
         instagram_id="123456789",
-        caption="Bolo lindo #semhashtagvalida",
+        caption="Bolo lindo sem categoria",
         media_url="https://example.com/img.jpg",
         permalink="https://instagram.com/p/abc",
     )
 
     assert result is not None
-    instagram_post_repository_mock.save.assert_called_once()
+    save_call = instagram_post_repository_mock.save.call_args[0][0]
+    assert save_call.subcategory_id is None
 
 
 def test_sync_post_no_caption(instagram_usecase, instagram_post_repository_mock, fake_instagram_post_domain):
@@ -72,6 +73,57 @@ def test_sync_post_no_caption(instagram_usecase, instagram_post_repository_mock,
 
     assert result is not None
     instagram_post_repository_mock.save.assert_called_once()
+
+
+def test_sync_post_hashtag_contains_match(instagram_usecase, instagram_post_repository_mock, decorated_cake_repository_mock, fake_instagram_post_domain, fake_decorated_cake_domain):
+    """boloFeminino deve casar com subcategoria cujo hashtag é 'feminino'."""
+    instagram_post_repository_mock.get_by_instagram_id.return_value = None
+    decorated_cake_repository_mock.get_all.return_value = [fake_decorated_cake_domain]
+    instagram_post_repository_mock.save.return_value = fake_instagram_post_domain
+
+    instagram_usecase.sync_post(
+        instagram_id="abc",
+        caption="#boloFeminino lindo",
+        media_url="https://example.com/img.jpg",
+        permalink="https://instagram.com/p/abc",
+    )
+
+    save_call = instagram_post_repository_mock.save.call_args[0][0]
+    assert save_call.subcategory_id == fake_decorated_cake_domain.id
+
+
+def test_sync_post_plain_word_match(instagram_usecase, instagram_post_repository_mock, decorated_cake_repository_mock, fake_instagram_post_domain, fake_decorated_cake_domain):
+    """Palavra sem # no caption também deve classificar o post."""
+    instagram_post_repository_mock.get_by_instagram_id.return_value = None
+    decorated_cake_repository_mock.get_all.return_value = [fake_decorated_cake_domain]
+    instagram_post_repository_mock.save.return_value = fake_instagram_post_domain
+
+    instagram_usecase.sync_post(
+        instagram_id="xyz",
+        caption="Bolo feminino para aniversario",
+        media_url="https://example.com/img.jpg",
+        permalink="https://instagram.com/p/xyz",
+    )
+
+    save_call = instagram_post_repository_mock.save.call_args[0][0]
+    assert save_call.subcategory_id == fake_decorated_cake_domain.id
+
+
+def test_sync_post_case_insensitive_match(instagram_usecase, instagram_post_repository_mock, decorated_cake_repository_mock, fake_instagram_post_domain, fake_decorated_cake_domain):
+    """Correspondência deve ser insensível a maiúsculas/minúsculas."""
+    instagram_post_repository_mock.get_by_instagram_id.return_value = None
+    decorated_cake_repository_mock.get_all.return_value = [fake_decorated_cake_domain]
+    instagram_post_repository_mock.save.return_value = fake_instagram_post_domain
+
+    instagram_usecase.sync_post(
+        instagram_id="zzz",
+        caption="#BOLOFEMININO",
+        media_url="https://example.com/img.jpg",
+        permalink="https://instagram.com/p/zzz",
+    )
+
+    save_call = instagram_post_repository_mock.save.call_args[0][0]
+    assert save_call.subcategory_id == fake_decorated_cake_domain.id
 
 
 # ──────────────────────────────────────────────
