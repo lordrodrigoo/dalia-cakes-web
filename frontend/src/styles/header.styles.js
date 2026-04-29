@@ -7,8 +7,8 @@ export const headerStyles = {
   navOpenActive: "scale-100 opacity-100 pointer-events-auto",
   link: "relative text-gray-600 font-medium transition-colors duration-200 after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-0.5 after:bg-pink-500 after:transition-all after:duration-300 hover:after:w-full hover:text-pink-500",
   linkActive: "relative text-pink-600 font-bold  border-pink-600 after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-full after:h-0.5 after:bg-pink-600",
-  btnGroupDesktop: "justify-end gap-4 ml-2",
-  btnGroupMobile: "flex md:hidden items-center justify-center gap-7",
+  btnGroupDesktop: "justify-end gap-4 ml-2 ",
+  btnGroupMobile: "flex md:hidden items-center justify-center gap-7 mt-4",
   hamburger: "flex flex-col gap-1 md:hidden cursor-pointer mr-4",
   hamburgerBar: "w-6 h-0.5 bg-gray-900 transition-all duration-500",
 }

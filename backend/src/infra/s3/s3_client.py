@@ -33,3 +33,10 @@ class S3Client:
             raise
 
         return f"https://{self._bucket}.s3.{self._region}.amazonaws.com/{key}"
+
+    def delete(self, key: str) -> None:
+        try:
+            self._client.delete_object(Bucket=self._bucket, Key=key)
+        except (BotoCoreError, ClientError) as exc:
+            logger.error("S3 delete failed: %s", exc)
+            raise

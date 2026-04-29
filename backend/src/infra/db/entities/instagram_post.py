@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey
+from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Text
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import relationship
 from backend.src.infra.db.settings.base import Base
@@ -12,8 +12,8 @@ class InstagramPostEntity(Base):
     id = Column(PG_UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     instagram_id = Column(String(100), unique=True, nullable=False)
     caption = Column(String(2200), nullable=True)
-    media_url = Column(String(500), nullable=False)
-    permalink = Column(String(500), nullable=False)
+    media_url = Column(Text, nullable=False)
+    permalink = Column(Text, nullable=False)
     subcategory_id = Column(PG_UUID(as_uuid=True), ForeignKey("decorated_cakes.id"), nullable=True)
     is_featured = Column(Boolean, nullable=False, default=True)
     featured_until = Column(DateTime(timezone=True), nullable=False)

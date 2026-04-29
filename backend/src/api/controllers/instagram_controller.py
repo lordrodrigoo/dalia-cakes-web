@@ -12,6 +12,9 @@ from backend.src.dto.response.instagram_post_response import InstagramPostRespon
 from backend.src.usecases.instagram_usecases import InstagramPostUsecase
 from backend.src.api.dependencies import get_instagram_usecase, get_current_user, get_upload_usecase
 from backend.src.dto.response.admin_response import AdminResponse
+from backend.src.infra.instagram.scheduler import sync_instagram_job
+from backend.src.infra.instagram.instagram_client import refresh_instagram_token
+from backend.src.config.settings import settings
 
 
 API_V1_PREFIX = os.getenv("API_V1_PREFIX", "/api/v1")
@@ -20,6 +23,26 @@ INSTAGRAM_PREFIX = f"{API_V1_PREFIX}/instagram-posts"
 router = APIRouter(prefix=INSTAGRAM_PREFIX, tags=["Instagram Posts"])
 logger = logging.getLogger(__name__)
 
+
+
+@router.post("/sync", status_code=status.HTTP_204_NO_CONTENT)
+def trigger_sync(
+    _: AdminResponse = Depends(get_current_user),
+):
+    """Authenticated endpoint to manually trigger an Instagram sync."""
+    sync_instagram_job()
+
+
+@router.post("/token/refresh", status_code=status.HTTP_204_NO_CONTENT)
+def trigger_token_refresh(
+    _: AdminResponse = Depends(get_current_user),
+):
+    """Authenticated endpoint to manually refresh the Instagram access token."""
+    new_token = refresh_instagram_token(settings.INSTAGRAM_ACCESS_TOKEN)
+    if new_token:
+        logger.info("Instagram token refreshed via manual trigger")
+    else:
+        logger.warning("Instagram token refresh failed via manual trigger")
 
 
 @router.post("/manual", response_model=InstagramPostResponse, status_code=status.HTTP_201_CREATED)
@@ -71,6 +94,16 @@ def update_post_subcategory(
 ):
     """Authenticated endpoint to manually classify a post's subcategory."""
     return instagram_usecase.update_subcategory(post_id, request)
+
+
+@router.patch("/{post_id}/featured", response_model=InstagramPostResponse, status_code=status.HTTP_200_OK)
+def toggle_featured(
+    post_id: UUID,
+    _: AdminResponse = Depends(get_current_user),
+    instagram_usecase: InstagramPostUsecase = Depends(get_instagram_usecase),
+):
+    """Authenticated endpoint to toggle a post's featured status."""
+    return instagram_usecase.toggle_featured(post_id)
 
 
 @router.delete("/{post_id}", status_code=status.HTTP_204_NO_CONTENT)

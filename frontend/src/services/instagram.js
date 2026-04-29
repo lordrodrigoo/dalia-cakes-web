@@ -9,3 +9,5 @@ export const deletePost = (postId) => api.delete(`/instagram-posts/${postId}`)
 export const createManualPost = (formData) => api.post('/instagram-posts/manual', formData, {
   headers: { 'Content-Type': 'multipart/form-data' }
 })
+export const toggleFeatured = (postId) => api.patch(`/instagram-posts/${postId}/featured`)
+export const syncInstagram = () => api.post('/instagram-posts/sync')

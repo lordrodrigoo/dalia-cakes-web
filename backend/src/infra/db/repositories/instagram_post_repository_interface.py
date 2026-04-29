@@ -56,10 +56,14 @@ class InstagramPostRepository(InstagramPostRepositoryInterface):
         ).all()
         return [InstagramPost.from_entity(e) for e in entities]
 
-    def update_featured_status(self, post_id: UUID, is_featured: bool) -> None:
-        self.session.query(InstagramPostEntity).filter_by(id=post_id).update(
-            {"is_featured": is_featured}
-        )
+    def update_featured_status(self, post_id: UUID, is_featured: bool, featured_until: datetime) -> Optional[InstagramPost]:
+        entity = self.session.query(InstagramPostEntity).filter_by(id=post_id).first()
+        if entity:
+            entity.is_featured = is_featured
+            entity.featured_until = featured_until
+            self.session.flush()
+            return InstagramPost.from_entity(entity)
+        return None
 
     def update_subcategory(self, post_id: UUID, subcategory_id: Optional[UUID]) -> InstagramPost:
         entity = self.session.query(InstagramPostEntity).filter_by(id=post_id).first()

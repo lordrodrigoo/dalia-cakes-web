@@ -244,7 +244,9 @@ def test_refresh_featured_status_expires_old_posts(instagram_usecase, instagram_
 
     instagram_usecase.refresh_featured_status()
 
-    instagram_post_repository_mock.update_featured_status.assert_called_once_with(expired_post.id, False)
+    call_args = instagram_post_repository_mock.update_featured_status.call_args
+    assert call_args[0][0] == expired_post.id
+    assert call_args[0][1] is False
 
 
 def test_refresh_featured_status_keeps_valid_posts(instagram_usecase, instagram_post_repository_mock, fake_instagram_post_domain):

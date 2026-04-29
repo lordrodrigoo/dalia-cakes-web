@@ -15,6 +15,7 @@ from backend.src.exceptions.exception_handlers_instagram import (
     InstagramPostNotFoundException,
     DecoratedCakeNotFoundException,
 )
+from backend.src.usecases.upload_usecases import UploadUsecase
 
 
 logger = logging.getLogger(__name__)
@@ -27,9 +28,11 @@ class InstagramPostUsecase:
         self,
         instagram_post_repository: InstagramPostRepositoryInterface,
         decorated_cake_repository: DecoratedCakeRepositoryInterface,
+        upload_usecase: UploadUsecase = None,
     ):
         self.instagram_post_repository = instagram_post_repository
         self.decorated_cake_repository = decorated_cake_repository
+        self.upload_usecase = upload_usecase
 
 
     def sync_post(self, instagram_id: str, caption: str | None, media_url: str, permalink: str) -> InstagramPostResponse:
@@ -40,13 +43,12 @@ class InstagramPostUsecase:
 
         subcategory_id = None
         if caption:
-            for word in caption.split():
-                if word.startswith("#"):
-                    hashtag = word.lstrip("#").lower()
-                    subcategory = self.decorated_cake_repository.get_by_hashtag(hashtag)
-                    if subcategory:
-                        subcategory_id = subcategory.id
-                        break
+            caption_lower = caption.lower()
+            subcategories = self.decorated_cake_repository.get_all()
+            for sub in subcategories:
+                if sub.hashtag.lower() in caption_lower:
+                    subcategory_id = sub.id
+                    break
 
         now = datetime.now(timezone.utc)
         post = InstagramPost(
@@ -107,6 +109,9 @@ class InstagramPostUsecase:
         if not any(p.id == post_id for p in posts):
             logger.warning("Instagram post not found for delete", extra={"post_id": post_id})
             raise InstagramPostNotFoundException(post_id)
+        post = next((p for p in posts if p.id == post_id), None)
+        if self.upload_usecase and post and post.media_url:
+            self.upload_usecase.delete_image(post.media_url)
         self.instagram_post_repository.delete(post_id)
         logger.info("Post deleted", extra={"post_id": post_id})
 
@@ -116,12 +121,25 @@ class InstagramPostUsecase:
         return [DecoratedCakeResponse(**s.__dict__) for s in subcategories]
 
 
+    def toggle_featured(self, post_id: UUID) -> InstagramPostResponse:
+        posts = self.instagram_post_repository.get_all()
+        post = next((p for p in posts if p.id == post_id), None)
+        if not post:
+            raise InstagramPostNotFoundException(post_id)
+        now = datetime.now(timezone.utc)
+        new_is_featured = not post.is_featured
+        new_featured_until = now + timedelta(days=FEATURED_DURATION_DAYS) if new_is_featured else now
+        updated = self.instagram_post_repository.update_featured_status(post_id, new_is_featured, new_featured_until)
+        logger.info("Post featured toggled", extra={"post_id": post_id, "is_featured": new_is_featured})
+        return InstagramPostResponse(**updated.__dict__)
+
+
     def refresh_featured_status(self) -> None:
         now = datetime.now(timezone.utc)
         posts = self.instagram_post_repository.get_all()
         for post in posts:
             if post.is_featured and post.featured_until < now:
-                self.instagram_post_repository.update_featured_status(post.id, False)
+                self.instagram_post_repository.update_featured_status(post.id, False, now)
                 logger.info("Post featured status expired", extra={"post_id": post.id})
 
 

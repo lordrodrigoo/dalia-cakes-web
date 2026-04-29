@@ -5,6 +5,7 @@ export const adminInstagramStyles = {
   header: "flex items-center justify-between",
   heading: "text-2xl font-bold text-gray-900",
   addBtn: "flex items-center gap-2 bg-zinc-950 text-white px-4 py-2 rounded-lg hover:bg-zinc-800 transition-colors text-sm font-semibold",
+  syncBtn: "flex items-center gap-2 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed",
 
   // Filtros
   filterWrapper: "flex items-center gap-3 flex-wrap",
@@ -18,6 +19,8 @@ export const adminInstagramStyles = {
   cardSubcategory: "text-xs text-white bg-black/40 px-2 py-1 rounded-full text-center w-full truncate",
   cardDeleteBtn: "text-xs px-3 py-1.5 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors font-medium w-full text-center",
   cardClassifyBtn: "text-xs px-3 py-1.5 rounded-lg bg-white text-gray-800 hover:bg-gray-100 transition-colors font-medium w-full text-center",
+  cardFeaturedBtn: "text-xs px-3 py-1.5 rounded-lg bg-yellow-400 text-yellow-900 hover:bg-yellow-300 transition-colors font-medium w-full text-center",
+  cardFeaturedBadge: "absolute top-2 left-2 bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-0.5 rounded-full",
 
   // Empty state
   empty: "text-center py-12 text-gray-400 text-sm",

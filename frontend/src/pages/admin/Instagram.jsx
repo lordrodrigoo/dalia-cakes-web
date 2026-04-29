@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getAllPosts, deletePost, updatePostSubcategory, createManualPost } from '../../services/instagram'
+import { getAllPosts, deletePost, updatePostSubcategory, createManualPost, toggleFeatured, syncInstagram } from '../../services/instagram'
 import { getSubcategories } from '../../services/decoratedCakes'
 import { adminInstagramStyles as s } from '../../styles/adminInstagram.styles'
 import toast from 'react-hot-toast'
@@ -9,6 +9,7 @@ export default function AdminInstagram() {
   const [subcategories, setSubcategories] = useState([])
   const [filterSubcategory, setFilterSubcategory] = useState('')
   const [loading, setLoading] = useState(true)
+  const [syncing, setSyncing] = useState(false)
 
   // Modal de upload manual
   const [uploadModalOpen, setUploadModalOpen] = useState(false)
@@ -37,6 +38,19 @@ export default function AdminInstagram() {
   }
 
   useEffect(() => { fetchAll() }, [])
+
+  const handleSync = async () => {
+    setSyncing(true)
+    try {
+      await syncInstagram()
+      toast.success('Sincronização concluída!')
+      await fetchAll()
+    } catch {
+      toast.error('Erro ao sincronizar com o Instagram.')
+    } finally {
+      setSyncing(false)
+    }
+  }
 
   // Upload manual
   const openUploadModal = () => {
@@ -110,6 +124,16 @@ export default function AdminInstagram() {
   }
   }
 
+  const handleToggleFeatured = async (post) => {
+    try {
+      await toggleFeatured(post.id)
+      toast.success(post.is_featured ? 'Post removido do destaque!' : 'Post destacado na home!')
+      await fetchAll()
+    } catch {
+      toast.error('Erro ao atualizar destaque.')
+    }
+  }
+
   const getSubcategoryName = (id) => subcategories.find(s => s.id === id)?.name || null
 
   const filtered = filterSubcategory
@@ -121,6 +145,9 @@ export default function AdminInstagram() {
 
       <div className={s.header}>
         <h1 className={s.heading}>Instagram</h1>
+        <button className={s.syncBtn} onClick={handleSync} disabled={syncing}>
+          {syncing ? 'Sincronizando...' : '↻ Sincronizar'}
+        </button>
         <button className={s.addBtn} onClick={openUploadModal}>+ Nova foto</button>
       </div>
 
@@ -147,10 +174,14 @@ export default function AdminInstagram() {
           {filtered.map(post => (
             <div key={post.id} className={s.card}>
               <img src={post.media_url} alt={post.caption || 'Post'} className={s.cardImg} />
+              {post.is_featured && <span className={s.cardFeaturedBadge}>⭐ Destaque</span>}
               <div className={s.cardOverlay}>
                 {post.subcategory_id && (
                   <span className={s.cardSubcategory}>{getSubcategoryName(post.subcategory_id)}</span>
                 )}
+                <button className={s.cardFeaturedBtn} onClick={() => handleToggleFeatured(post)}>
+                  {post.is_featured ? '★ Remover destaque' : '☆ Destacar na home'}
+                </button>
                 <button className={s.cardClassifyBtn} onClick={() => openClassifyModal(post)}>
                   Classificar
                 </button>

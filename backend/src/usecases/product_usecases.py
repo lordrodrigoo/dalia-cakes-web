@@ -9,6 +9,7 @@ from backend.src.exceptions.exception_handlers_product import (
     ProductNotFoundException,
     ProductCategoryNotFoundException,
 )
+from backend.src.usecases.upload_usecases import UploadUsecase
 
 logger = logging.getLogger(__name__)
 
@@ -18,9 +19,11 @@ class ProductUsecase:
         self,
         product_repository: ProductRepositoryInterface,
         category_repository: CategoryRepositoryInterface,
+        upload_usecase: UploadUsecase = None,
     ):
         self.product_repository = product_repository
         self.category_repository = category_repository
+        self.upload_usecase = upload_usecase
 
     def create_product(self, product_request: ProductRequest) -> ProductResponse:
         if not self.category_repository.get_category_by_id(product_request.category_id):
@@ -85,5 +88,7 @@ class ProductUsecase:
             logger.warning("Product not found for deletion", extra={"product_id": product_id})
             raise ProductNotFoundException(product_id)
 
+        if self.upload_usecase and product.image_url:
+            self.upload_usecase.delete_image(product.image_url)
         self.product_repository.delete_product(product_id)
         logger.info("Product deleted", extra={"product_id": product_id})

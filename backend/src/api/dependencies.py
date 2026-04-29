@@ -47,30 +47,6 @@ def get_current_user(
     return admin_usecase.get_admin_by_id(token_data.sub)
 
 
-def get_category_usecase(db=Depends(get_db)):
-    category_repository = CategoryRepository(db)
-    return CategoryUsecase(category_repository)
-
-
-def get_product_usecase(db=Depends(get_db)):
-    product_repository = ProductRepository(db)
-    category_repository = CategoryRepository(db)
-    return ProductUsecase(product_repository, category_repository)
-
-
-def get_instagram_usecase(db=Depends(get_db)):
-    instagram_post_repository = InstagramPostRepository(db)
-    decorated_cake_repository = DecoratedCakeRepository(db)
-    return InstagramPostUsecase(instagram_post_repository, decorated_cake_repository)
-
-
-def get_chatbot_usecase(db=Depends(get_db)):
-    product_repository = ProductRepository(db)
-    category_repository = CategoryRepository(db)
-    gemini_client = GeminiClient(api_key=settings.GEMINI_API_KEY, model=settings.GEMINI_MODEL)
-    return ChatbotUsecase(product_repository, category_repository, gemini_client)
-
-
 def get_upload_usecase():
     s3 = S3Client(
         access_key=settings.AWS_ACCESS_KEY_ID,
@@ -79,3 +55,27 @@ def get_upload_usecase():
         region=settings.AWS_S3_REGION,
     )
     return UploadUsecase(s3)
+
+
+def get_category_usecase(db=Depends(get_db), upload_usecase=Depends(get_upload_usecase)):
+    category_repository = CategoryRepository(db)
+    return CategoryUsecase(category_repository, upload_usecase)
+
+
+def get_product_usecase(db=Depends(get_db), upload_usecase=Depends(get_upload_usecase)):
+    product_repository = ProductRepository(db)
+    category_repository = CategoryRepository(db)
+    return ProductUsecase(product_repository, category_repository, upload_usecase)
+
+
+def get_instagram_usecase(db=Depends(get_db), upload_usecase=Depends(get_upload_usecase)):
+    instagram_post_repository = InstagramPostRepository(db)
+    decorated_cake_repository = DecoratedCakeRepository(db)
+    return InstagramPostUsecase(instagram_post_repository, decorated_cake_repository, upload_usecase)
+
+
+def get_chatbot_usecase(db=Depends(get_db)):
+    product_repository = ProductRepository(db)
+    category_repository = CategoryRepository(db)
+    gemini_client = GeminiClient(api_key=settings.GEMINI_API_KEY, model=settings.GEMINI_MODEL)
+    return ChatbotUsecase(product_repository, category_repository, gemini_client)

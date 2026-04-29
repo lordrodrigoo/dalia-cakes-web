@@ -9,13 +9,15 @@ from backend.src.exceptions.exception_handlers_category import (
     CategoryNameAlreadyExistsException,
     CategorySlugAlreadyExistsException,
 )
+from backend.src.usecases.upload_usecases import UploadUsecase
 
 logger = logging.getLogger(__name__)
 
 
 class CategoryUsecase:
-    def __init__(self, category_repository: CategoryRepositoryInterface):
+    def __init__(self, category_repository: CategoryRepositoryInterface, upload_usecase: UploadUsecase = None):
         self.category_repository = category_repository
+        self.upload_usecase = upload_usecase
 
     def create_category(self, category_request: CategoryRequest) -> CategoryResponse:
         if self.category_repository.get_category_by_slug(category_request.slug):
@@ -89,5 +91,7 @@ class CategoryUsecase:
             logger.warning("Category not found for deletion", extra={"category_id": category_id})
             raise CategoryNotFoundException(category_id)
 
+        if self.upload_usecase and category.image_url:
+            self.upload_usecase.delete_image(category.image_url)
         self.category_repository.delete_category(category_id)
         logger.info("Category deleted", extra={"category_id": category_id})
