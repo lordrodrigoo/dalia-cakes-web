@@ -22,12 +22,14 @@ on:
       - 'frontend/**'
       - 'Dockerfile.frontend'
       - 'nginx.conf'
+      - '.github/workflows/frontend.yml'
   push:
     branches: [main]
     paths:
       - 'frontend/**'
       - 'Dockerfile.frontend'
       - 'nginx.conf'
+      - '.github/workflows/frontend.yml'
   workflow_dispatch:
 
 permissions:

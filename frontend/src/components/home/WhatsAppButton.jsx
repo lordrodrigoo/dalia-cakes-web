@@ -3,7 +3,6 @@ import whatsappIcon from '../../assets/icons/whatsapp.png'
 import { whatsAppButtonStyles as s } from '../../styles/socialButtons.styles'
 
 export default function WhatsAppButton({
-  text = '',
   number = import.meta.env.VITE_WHATSAPP_NUMBER,
   className = '',
   ...props

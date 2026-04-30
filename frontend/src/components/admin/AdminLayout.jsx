@@ -6,12 +6,6 @@ import logo from '../../assets/images/logo_home.png'
 import toast from 'react-hot-toast'
 
 
-const handleLogout = () => {
-  logout()
-  toast.success('Até logo!')
-  navigate('/login')
-}
-
 const navItems = [
   { to: "/admin", label: "Dashboard", icon: "📊", end: true },
   { to: "/admin/categorias", label: "Categorias", icon: "🗂️" },

@@ -59,7 +59,7 @@ export default function InstagramFeed() {
     if (navigator.share) {
       try {
         await navigator.share({ title: "Confeitaria da Dalia", url: post.permalink })
-      } catch {}
+      } catch (_e) { /* share cancelled */ }
     } else {
       setShareMenuOpen(prev => !prev)
     }

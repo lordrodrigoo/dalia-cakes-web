@@ -18,8 +18,6 @@ const links = [
 export default function Header() {
   const [open, setOpen] = useState(false)
 
-  const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER
-  const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Olá! Vim pelo site e gostaria de fazer um pedido 🎂')}`
 
   return (
     <header className={s.header}>
