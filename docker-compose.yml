@@ -46,7 +46,7 @@ services:
     networks:
       - dalia-cakes-network
     restart: unless-stopped
-    command: sh -c "alembic upgrade head && uvicorn backend.src.main:app --host 0.0.0.0 --port 8000"
+    command: uvicorn backend.src.main:app --host 0.0.0.0 --port 8000
 
 volumes:
   postgres_data:
