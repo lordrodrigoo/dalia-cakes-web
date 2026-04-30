@@ -29,6 +29,8 @@ def setup_middlewares(app: FastAPI):
         allow_origins=[
             "http://localhost",
             "http://localhost:5173",
+            "https://daliabolosedoces.com.br",
+            "https://www.daliabolosedoces.com.br",
         ],
         allow_methods=["*"],
         allow_headers=["*"],
