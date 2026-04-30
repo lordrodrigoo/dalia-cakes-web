@@ -267,36 +267,38 @@ jobs:
           script: |
             set -Eeuo pipefail
             cd "$DEPLOY_PATH"
+
             echo "$GHCR_PAT" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
-            docker compose pull app
+
+            export APP_IMAGE="$APP_IMAGE"
             PREV_IMAGE=$(docker inspect --format='{{.Config.Image}}' dalia_cakes_app 2>/dev/null || true)
+
             rollback() {
-              echo "⚠️  Deploy failed. Starting rollback..."
+              echo "Deploy failed. Starting rollback..."
               if [ -n "$PREV_IMAGE" ]; then
-                export APP_IMAGE="$PREV_IMAGE"
-                docker compose up -d app
-                echo "✅ Rollback completed: $PREV_IMAGE"
+                APP_IMAGE="$PREV_IMAGE" docker compose up -d --no-build --force-recreate app
+                echo "Rollback completed: $PREV_IMAGE"
               else
-                echo "ℹ️  No previous image found — skipping rollback (first deploy)."
+                echo "No previous image — skipping rollback (first deploy)."
               fi
             }
             trap rollback ERR
-            export APP_IMAGE="$APP_IMAGE"
-            docker compose up -d --no-build --remove-orphans app database
+
+            docker pull "$APP_IMAGE"
+            docker compose up -d --no-build --force-recreate database
+            docker compose up -d --no-build --force-recreate app
             docker compose exec -T app alembic upgrade head
-            echo "Waiting for application to be ready..."
+
             for i in $(seq 1 5); do
               if curl -fsS http://localhost:8000/health >/dev/null; then
-                echo "✅ Health check passed"
+                echo "Health check passed"
                 break
               fi
-              if [ "$i" -eq 5 ]; then
-                echo "❌ Health check failed after 5 attempts"
-                exit 1
-              fi
-              echo "Attempt $i/5 failed — retrying in 5s..."
+              [ "$i" -eq 5 ] && echo "Health check failed" && exit 1
+              echo "Attempt $i/5 — retrying in 5s..."
               sleep 5
             done
+
             docker image prune -f
-            echo "🚀 Deploy complete: $APP_IMAGE"
+            echo "Deploy complete: $APP_IMAGE"
 
