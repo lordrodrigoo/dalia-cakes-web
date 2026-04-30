@@ -203,7 +203,7 @@ jobs:
             }
             trap rollback ERR
             export FRONTEND_IMAGE="$FRONTEND_IMAGE"
-            docker compose up -d --remove-orphans frontend
+            docker compose up -d --no-build --remove-orphans frontend
             echo "Waiting for frontend to be ready..."
             for i in $(seq 1 5); do
               if curl -fsS http://localhost:80 >/dev/null; then

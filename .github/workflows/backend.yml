@@ -282,7 +282,7 @@ jobs:
             }
             trap rollback ERR
             export APP_IMAGE="$APP_IMAGE"
-            docker compose up -d --remove-orphans
+            docker compose up -d --no-build --remove-orphans app database
             docker compose exec -T app alembic upgrade head
             echo "Waiting for application to be ready..."
             for i in $(seq 1 5); do

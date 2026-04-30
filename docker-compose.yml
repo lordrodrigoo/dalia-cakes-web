@@ -1,17 +1,6 @@
 services:
   frontend:
     image: ${FRONTEND_IMAGE:-dalia-cakes-frontend:local}
-    build:
-      context: .
-      dockerfile: Dockerfile.frontend
-      args:
-        VITE_API_URL: ${VITE_API_URL:-/api/v1}
-        VITE_BUSINESS_PHONE: ${VITE_BUSINESS_PHONE}
-        VITE_WHATSAPP_NUMBER: ${VITE_WHATSAPP_NUMBER}
-        VITE_IFOOD_URL: ${VITE_IFOOD_URL}
-        VITE_ADDRESS: ${VITE_ADDRESS}
-        VITE_MAPS_LINK: ${VITE_MAPS_LINK}
-        VITE_MAPS_EMBED: ${VITE_MAPS_EMBED}
     container_name: dalia_cakes_frontend
     ports:
       - "80:80"
@@ -20,6 +9,7 @@ services:
     networks:
       - dalia-cakes-network
     restart: unless-stopped
+
   database:
     image: postgres:16-alpine
     container_name: dalia_cakes_database
@@ -41,7 +31,6 @@ services:
 
   app:
     image: ${APP_IMAGE:-dalia-cakes:local}
-    build: .
     container_name: dalia_cakes_app
     env_file: .env
     environment:
