@@ -98,14 +98,6 @@ jobs:
           file: Dockerfile.frontend
           push: false
           tags: local/dalia-cakes-frontend:ci-check
-          build-args: |
-            VITE_API_URL=/api/v1
-            VITE_BUSINESS_PHONE=${{ secrets.VITE_BUSINESS_PHONE }}
-            VITE_WHATSAPP_NUMBER=${{ secrets.VITE_WHATSAPP_NUMBER }}
-            VITE_IFOOD_URL=${{ secrets.VITE_IFOOD_URL }}
-            VITE_ADDRESS=${{ secrets.VITE_ADDRESS }}
-            VITE_MAPS_LINK=${{ secrets.VITE_MAPS_LINK }}
-            VITE_MAPS_EMBED=${{ secrets.VITE_MAPS_EMBED }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -148,14 +140,6 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.image_tag }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          build-args: |
-            VITE_API_URL=/api/v1
-            VITE_BUSINESS_PHONE=${{ secrets.VITE_BUSINESS_PHONE }}
-            VITE_WHATSAPP_NUMBER=${{ secrets.VITE_WHATSAPP_NUMBER }}
-            VITE_IFOOD_URL=${{ secrets.VITE_IFOOD_URL }}
-            VITE_ADDRESS=${{ secrets.VITE_ADDRESS }}
-            VITE_MAPS_LINK=${{ secrets.VITE_MAPS_LINK }}
-            VITE_MAPS_EMBED=${{ secrets.VITE_MAPS_EMBED }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -218,19 +202,3 @@ jobs:
             docker image prune -f
             echo "Deploy complete: $FRONTEND_IMAGE"
 
-      - name: Notify failure by email
-        if: failure()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{ secrets.SMTP_USERNAME }}
-          password: ${{ secrets.SMTP_PASSWORD }}
-          subject: "[Dalia Cakes] Frontend deploy failed!"
-          to: ${{ secrets.NOTIFY_EMAIL }}
-          from: "Dalia Cakes Deploy <no-reply@daliacakes.com>"
-          body: |
-            Frontend deploy failed!
-            Commit: ${{ github.sha }}
-            Author: ${{ github.actor }}
-            Logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

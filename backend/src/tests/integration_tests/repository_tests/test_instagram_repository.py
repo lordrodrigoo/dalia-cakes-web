@@ -225,7 +225,8 @@ def test_update_featured_status(fake_instagram_post, db_session):
     db_handler = FakeDBConnectionHandler(db_session)
     repo = InstagramPostRepository(db_handler)
 
-    repo.update_featured_status(fake_instagram_post.id, False)
+    now = datetime.now(timezone.utc)
+    repo.update_featured_status(fake_instagram_post.id, False, now)
     db_session.commit()
 
     result = repo.get_by_instagram_id(fake_instagram_post.instagram_id)

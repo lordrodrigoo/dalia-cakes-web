@@ -5,12 +5,12 @@ WORKDIR /app
 
 # VITE_ vars are baked into the bundle at build time
 ARG VITE_API_URL=/api/v1
-ARG VITE_BUSINESS_PHONE
-ARG VITE_WHATSAPP_NUMBER
-ARG VITE_IFOOD_URL
-ARG VITE_ADDRESS
-ARG VITE_MAPS_LINK
-ARG VITE_MAPS_EMBED
+ARG VITE_BUSINESS_PHONE="+55 11 995469412"
+ARG VITE_WHATSAPP_NUMBER="5511995469412"
+ARG VITE_IFOOD_URL="https://www.ifood.com.br/delivery/sao-paulo-sp/confeitaria-dalia-bolos-e-sobremesas-vila-fernandes/8aa01342-582c-46f4-bec7-37faf062f735"
+ARG VITE_ADDRESS="Rua Vacanga, 41 - Vila Fernandes, São Paulo - SP"
+ARG VITE_MAPS_LINK="https://maps.google.com/?q=Rua+Vacanga+41+Vila+Fernandes+São+Paulo+SP"
+ARG VITE_MAPS_EMBED="https://maps.google.com/maps?q=Rua+Vacanga+41+Vila+Fernandes+São+Paulo+SP&output=embed"
 
 ENV VITE_API_URL=$VITE_API_URL \
     VITE_BUSINESS_PHONE=$VITE_BUSINESS_PHONE \
