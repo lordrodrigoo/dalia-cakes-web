@@ -25,24 +25,47 @@ def refresh_token_job() -> None:
         logger.warning("Instagram token refresh job failed — token may expire soon")
 
 
-def sync_instagram_job() -> None:
+def sync_instagram_job() -> dict:
     logger.info("Running Instagram sync job")
+    synced = 0
+    skipped = 0
+    errors = 0
+
+    if not settings.INSTAGRAM_ACCESS_TOKEN:
+        logger.error("Instagram sync aborted: INSTAGRAM_ACCESS_TOKEN is not configured")
+        return {"synced": 0, "skipped": 0, "errors": 0, "error": "Token not configured"}
+
     with DBConnectionHandler() as db:
         instagram_repo = InstagramPostRepository(db)
         decorated_cake_repo = DecoratedCakeRepository(db)
         usecase = InstagramPostUsecase(instagram_repo, decorated_cake_repo)
 
         posts = fetch_instagram_posts(settings.INSTAGRAM_ACCESS_TOKEN)
+        logger.info("Fetched posts from Instagram", extra={"count": len(posts)})
+
         for post in posts:
-            usecase.sync_post(
-                instagram_id=post["id"],
-                caption=post.get("caption"),
-                media_url=post["media_url"],
-                permalink=post["permalink"],
-            )
+            media_url = post.get("media_url")
+            permalink = post.get("permalink")
+            if not media_url or not permalink:
+                logger.warning("Skipping post without media_url or permalink", extra={"instagram_id": post.get("id")})
+                skipped += 1
+                continue
+            try:
+                usecase.sync_post(
+                    instagram_id=post["id"],
+                    caption=post.get("caption"),
+                    media_url=media_url,
+                    permalink=permalink,
+                )
+                synced += 1
+            except Exception as e:  # pylint: disable=broad-except
+                logger.error("Failed to sync post", extra={"instagram_id": post.get("id"), "error": str(e)})
+                errors += 1
 
         usecase.refresh_featured_status()
-    logger.info("Instagram sync job completed")
+
+    logger.info("Instagram sync job completed", extra={"synced": synced, "skipped": skipped, "errors": errors})
+    return {"synced": synced, "skipped": skipped, "errors": errors}
 
 
 def start_scheduler() -> BackgroundScheduler:

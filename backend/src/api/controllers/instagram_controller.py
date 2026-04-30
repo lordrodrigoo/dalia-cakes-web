@@ -25,12 +25,12 @@ logger = logging.getLogger(__name__)
 
 
 
-@router.post("/sync", status_code=status.HTTP_204_NO_CONTENT)
+@router.post("/sync", status_code=status.HTTP_200_OK)
 def trigger_sync(
     _: AdminResponse = Depends(get_current_user),
 ):
     """Authenticated endpoint to manually trigger an Instagram sync."""
-    sync_instagram_job()
+    return sync_instagram_job()
 
 
 @router.post("/token/refresh", status_code=status.HTTP_204_NO_CONTENT)
