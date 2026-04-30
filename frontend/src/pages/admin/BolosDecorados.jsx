@@ -11,6 +11,7 @@ function slugify(text) {
     .replace(/[^a-z0-9\s-]/g, '')
     .trim()
     .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
 }
 
 function hashtagify(text) {
@@ -21,6 +22,7 @@ function hashtagify(text) {
     .replace(/[^a-z0-9\s_]/g, '')
     .trim()
     .replace(/\s+/g, '_')
+    .replace(/_+/g, '_')
 }
 
 const emptyForm = { name: '', slug: '', hashtag: '' }
@@ -97,9 +99,11 @@ export default function AdminBolosDecorados() {
     }
     await fetchSubcategories()
     closeModal()
-  } catch {
-    toast.error('Erro ao salvar subcategoria.')
-    setError('Erro ao salvar. Tente novamente.')
+  } catch (err) {
+    const msg = err.response?.data?.detail || 'Erro ao salvar. Tente novamente.'
+    const detail = Array.isArray(msg) ? msg.map(e => e.msg).join(', ') : msg
+    toast.error(detail)
+    setError(detail)
   } finally {
     setSaving(false)
   }
@@ -111,8 +115,9 @@ export default function AdminBolosDecorados() {
     await deleteSubcategory(id)
     toast.success('Subcategoria excluída com sucesso!')
     await fetchSubcategories()
-  } catch {
-    toast.error('Erro ao excluir subcategoria.')
+  } catch (err) {
+    const msg = err.response?.data?.detail || 'Erro ao excluir subcategoria.'
+    toast.error(Array.isArray(msg) ? msg.map(e => e.msg).join(', ') : msg)
   }
 }
 

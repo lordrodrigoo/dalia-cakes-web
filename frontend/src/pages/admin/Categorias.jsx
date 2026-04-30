@@ -12,6 +12,7 @@ function slugify(text) {
     .replace(/[^a-z0-9\s-]/g, '')
     .trim()
     .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
 }
 
 const emptyForm = { name: '', slug: '', image: null, previewUrl: '' }
@@ -92,9 +93,11 @@ export default function AdminCategorias() {
     }
     await fetchCategories()
     closeModal()
-  } catch {
-    toast.error('Erro ao salvar categoria.')
-    setError('Erro ao salvar. Tente novamente.')
+  } catch (err) {
+    const msg = err.response?.data?.detail || 'Erro ao salvar. Tente novamente.'
+    const detail = Array.isArray(msg) ? msg.map(e => e.msg).join(', ') : msg
+    toast.error(detail)
+    setError(detail)
   } finally {
     setSaving(false)
   }
@@ -106,8 +109,9 @@ export default function AdminCategorias() {
     await deleteCategory(id)
     toast.success('Categoria excluída com sucesso!')
     await fetchCategories()
-  } catch {
-    toast.error('Erro ao excluir categoria.')
+  } catch (err) {
+    const msg = err.response?.data?.detail || 'Erro ao excluir categoria.'
+    toast.error(Array.isArray(msg) ? msg.map(e => e.msg).join(', ') : msg)
   }
 }
 
