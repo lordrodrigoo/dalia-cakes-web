@@ -8,7 +8,6 @@ export const heroBannerStyles = {
   cta: "mt-2 px-8 py-3 bg-[#ad1457] text-white font-semibold rounded-full shadow-md hover:bg-[#880e4f] transition-colors no-underline",
   btnGroupTopRight: "absolute top-6 right-6 flex gap-2 z-10 hidden md:flex",
 
-  // Círculos decorativos nos cantos usando as cores do logo
-  decoTopLeft: "absolute -top-16 -left-16 w-64 h-64 rounded-full bg-teal-100/50 blur-2xl pointer-events-none",
-  decoBottomRight: "absolute -bottom-16 -right-16 w-72 h-72 rounded-full bg-pink-100/60 blur-2xl pointer-events-none",
+  decoTopLeft: "hidden",
+  decoBottomRight: "hidden",
 }
