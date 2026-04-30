@@ -4,7 +4,7 @@ import { useSEO } from '../hooks/useSEO'
 
 
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER
-const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Olá! Gostaria de fazer um pedido 🎂')}`
+const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Ola! Gostaria de fazer um pedido!')}`
 const IFOOD_URL = import.meta.env.VITE_IFOOD_URL
 const ADDRESS = import.meta.env.VITE_ADDRESS
 const MAPS_LINK = import.meta.env.VITE_MAPS_LINK

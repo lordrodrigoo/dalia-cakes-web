@@ -8,8 +8,9 @@ import { heroBannerStyles as s } from '../../styles/heroBanner.styles'
 export default function HeroBanner() {
   return (
     <section className={s.section}>
-      
-      
+      <div className={s.decoTopLeft} />
+      <div className={s.decoBottomRight} />
+
       <div className={s.content}>
         <img src={logo} alt="Dália Moreira Bolos e Doces" className={s.logo} />
         <p className={s.eyebrow}>Confeitaria Artesanal</p>

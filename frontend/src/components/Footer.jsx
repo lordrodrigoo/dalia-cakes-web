@@ -6,7 +6,7 @@ import facebookIcon from '../assets/icons/facebook.png'
 import ifoodIcon from '../assets/icons/Ifood_logo_sem_fundo.png'
 
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER
-const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Olá! Gostaria de fazer um pedido 🎂')}`
+const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Ola! Gostaria de fazer um pedido!')}`
 const IFOOD_URL = import.meta.env.VITE_IFOOD_URL
 
 export default function Footer() {

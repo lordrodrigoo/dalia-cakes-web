@@ -22,8 +22,13 @@ export const bolosDecoradosStyles = {
   modalOverlay: "fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4",
   modal: "relative max-w-2xl w-full",
   modalImg: "w-full rounded-xl object-contain max-h-[80vh]",
-  modalClose: "absolute -top-10 right-0 text-white hover:text-gray-300 transition-colors text-2xl font-bold cursor-pointer",
-  modalNav: "absolute inset-y-0 flex items-center justify-between w-full px-2",
-  modalPrev: "bg-white/20 hover:bg-white/40 text-white rounded-full w-10 h-10 flex items-center justify-center text-xl transition-colors",
-  modalNext: "bg-white/20 hover:bg-white/40 text-white rounded-full w-10 h-10 flex items-center justify-center text-xl transition-colors",
+  modalClose: "absolute top-3 right-3 bg-black/50 hover:bg-black/70 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg transition-colors cursor-pointer z-10",
+  modalNav: "absolute inset-y-0 flex items-center justify-between w-full px-2 pointer-events-none",
+  modalPrev: "pointer-events-auto bg-white/20 hover:bg-white/40 text-white rounded-full w-10 h-10 flex items-center justify-center text-xl transition-colors",
+  modalNext: "pointer-events-auto bg-white/20 hover:bg-white/40 text-white rounded-full w-10 h-10 flex items-center justify-center text-xl transition-colors",
+
+  // WhatsApp
+  modalFooter: "flex justify-center mt-4",
+  whatsappBtn: "flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-2.5 rounded-full transition-colors no-underline text-sm",
+  whatsappIcon: "w-5 h-5 object-contain",
 }

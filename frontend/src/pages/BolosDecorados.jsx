@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { getSubcategories, getPostsBySubcategory } from '../services/decoratedCakes'
 import { bolosDecoradosStyles as s } from '../styles/bolosDecorados.styles'
 import { useSEO } from '../hooks/useSEO'
+import { buildWhatsAppLink } from '../utils/whatsapp'
+import whatsappIcon from '../assets/icons/whatsapp.png'
 
 export default function BolosDecorados() {
   useSEO({ title: 'Bolos Decorados', description: 'Veja nossa galeria de bolos decorados artesanais: femininos, masculinos, infantis e muito mais.' })
@@ -107,6 +109,18 @@ export default function BolosDecorados() {
             <div className={s.modalNav}>
               <button className={s.modalPrev} onClick={handlePrev}>‹</button>
               <button className={s.modalNext} onClick={handleNext}>›</button>
+            </div>
+            <div className={s.modalFooter}>
+              <a
+                href={buildWhatsAppLink(`Ola! Vi este bolo no site da Confeitaria da Dalia e gostaria de um parecido! ${posts[selectedIndex].permalink}`)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={s.whatsappBtn}
+                onClick={e => e.stopPropagation()}
+              >
+                <img src={whatsappIcon} alt="WhatsApp" className={s.whatsappIcon} />
+                Compartilhar
+              </a>
             </div>
           </div>
         </div>

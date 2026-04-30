@@ -8,7 +8,7 @@ export const productCardStyles = {
   cardImg: "w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300",
   cardBody: "p-3 flex flex-col gap-1",
   cardName: "text-sm font-semibold text-gray-800",
-  cardPrice: "text-sm text-pink-600 font-bold",
+  cardPrice: "text-sm text-[#ad1457] font-bold",
 
   // Modal
   modalOverlay: "fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4",
@@ -16,7 +16,7 @@ export const productCardStyles = {
   modalImg: "w-full aspect-square object-cover",
   modalBody: "p-6 flex flex-col gap-4",
   modalName: "text-2xl font-bold text-gray-900",
-  modalPrice: "text-xl font-bold text-pink-600",
+  modalPrice: "text-xl font-bold text-[#ad1457]",
   modalDesc: "text-sm text-gray-600 leading-relaxed",
   modalActions: "flex flex-col sm:flex-row gap-2 mt-1",
   whatsappBtn: "flex- bg-green-600 hover:bg-green-500 text-white font-semibold py-3 px-4 rounded-xl transition-colors text-center text-sm items-center justify-center gap-1",
