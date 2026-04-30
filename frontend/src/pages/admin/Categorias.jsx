@@ -94,7 +94,7 @@ export default function AdminCategorias() {
     await fetchCategories()
     closeModal()
   } catch (err) {
-    const msg = err.response?.data?.detail || 'Erro ao salvar. Tente novamente.'
+    const msg = err.response?.data?.detail || err.response?.data?.message || 'Erro ao salvar. Tente novamente.'
     const detail = Array.isArray(msg) ? msg.map(e => e.msg).join(', ') : msg
     toast.error(detail)
     setError(detail)

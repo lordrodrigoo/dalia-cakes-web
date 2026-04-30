@@ -17,7 +17,7 @@ IMAGE_SIZES = {
     "instagram": (800, 800),
 }
 ALLOWED_FOLDERS = set(IMAGE_SIZES.keys())
-ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/png", "image/webp"}
+ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/jpg", "image/png", "image/webp"}
 DEFAULT_SIZE = (800, 800)
 QUALITY = 80
 

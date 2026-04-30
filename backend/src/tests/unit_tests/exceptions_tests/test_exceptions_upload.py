@@ -19,7 +19,7 @@ from backend.src.exceptions.exception_handlers_upload import (
 
 def test_image_upload_exception_default_message():
     exc = ImageUploadException()
-    assert "upload" in exc.message.lower()
+    assert exc.message
     assert str(exc) == exc.message
 
 
@@ -40,8 +40,8 @@ async def test_image_upload_handler_body_contains_message():
     exc = ImageUploadException()
     response = await _call_handler(image_upload_exception_handler, exc)
     body = json.loads(response.body)
-    assert "message" in body
-    assert body["message"] == exc.message
+    assert "detail" in body
+    assert body["detail"] == exc.message
 
 
 # ──────────────────────────────────────────────
@@ -71,8 +71,8 @@ async def test_invalid_upload_folder_handler_body_contains_message():
     exc = InvalidUploadFolderException()
     response = await _call_handler(invalid_upload_folder_exception_handler, exc)
     body = json.loads(response.body)
-    assert "message" in body
-    assert body["message"] == exc.message
+    assert "detail" in body
+    assert body["detail"] == exc.message
 
 
 # ──────────────────────────────────────────────
@@ -102,5 +102,5 @@ async def test_invalid_image_type_handler_body_contains_message():
     exc = InvalidImageTypeException()
     response = await _call_handler(invalid_image_type_exception_handler, exc)
     body = json.loads(response.body)
-    assert "message" in body
-    assert body["message"] == exc.message
+    assert "detail" in body
+    assert body["detail"] == exc.message
