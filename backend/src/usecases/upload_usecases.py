@@ -1,6 +1,6 @@
 import io
 import logging
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 from botocore.exceptions import BotoCoreError, ClientError
 from backend.src.infra.s3.s3_client import S3Client
 from backend.src.exceptions.exception_handlers_upload import (
@@ -17,7 +17,6 @@ IMAGE_SIZES = {
     "instagram": (800, 800),
 }
 ALLOWED_FOLDERS = set(IMAGE_SIZES.keys())
-ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/jpg", "image/png", "image/webp"}
 DEFAULT_SIZE = (800, 800)
 QUALITY = 80
 
@@ -26,11 +25,9 @@ class UploadUsecase:
     def __init__(self, s3_client: S3Client):
         self._s3 = s3_client
 
-    def upload_image(self, file_bytes: bytes, folder: str, content_type: str) -> str:
+    def upload_image(self, file_bytes: bytes, folder: str, content_type: str) -> str:  # pylint: disable=unused-argument
         if folder not in ALLOWED_FOLDERS:
             raise InvalidUploadFolderException()
-        if content_type not in ALLOWED_CONTENT_TYPES:
-            raise InvalidImageTypeException()
 
         width, height = IMAGE_SIZES.get(folder, DEFAULT_SIZE)
         processed = self._process_image(file_bytes, width, height)
@@ -52,9 +49,12 @@ class UploadUsecase:
             logger.warning("S3 image delete failed, continuing: %s", exc)
 
     def _process_image(self, file_bytes: bytes, width: int, height: int) -> bytes:
-        img = Image.open(io.BytesIO(file_bytes))
+        try:
+            img = Image.open(io.BytesIO(file_bytes))
+        except UnidentifiedImageError as exc:
+            raise InvalidImageTypeException() from exc
         img = img.convert("RGB")
-        img = img.resize((width, height), Image.Resampling.LANCZOS)
+        img.thumbnail((width, height), Image.Resampling.LANCZOS)
         output = io.BytesIO()
         img.save(output, format="WEBP", quality=QUALITY)
         return output.getvalue()

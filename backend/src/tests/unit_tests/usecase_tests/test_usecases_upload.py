@@ -58,12 +58,12 @@ def test_upload_valid_folder_categories_ok(upload_usecase, s3_mock):
 
 
 # ──────────────────────────────────────────────
-# Validação de content_type
+# Validação de formato (via PIL)
 # ──────────────────────────────────────────────
 
-def test_upload_invalid_content_type_raises(upload_usecase):
+def test_upload_invalid_image_bytes_raises(upload_usecase):
     with pytest.raises(InvalidImageTypeException):
-        upload_usecase.upload_image(make_jpeg_bytes(), "products", "application/pdf")
+        upload_usecase.upload_image(b"this is not an image", "products", "application/pdf")
 
 
 def test_upload_jpeg_accepted(upload_usecase, s3_mock):
