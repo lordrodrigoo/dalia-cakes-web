@@ -84,5 +84,12 @@ class InstagramPostRepository(InstagramPostRepositoryInterface):
             return InstagramPost.from_entity(entity)
         return None
 
+    def refresh_media_url(self, post_id: UUID, media_url: str, permalink: str) -> None:
+        entity = self.session.query(InstagramPostEntity).filter_by(id=post_id).first()
+        if entity:
+            entity.media_url = media_url
+            entity.permalink = permalink
+            self.session.flush()
+
     def delete(self, post_id: UUID) -> None:
         self.session.query(InstagramPostEntity).filter_by(id=post_id).delete()

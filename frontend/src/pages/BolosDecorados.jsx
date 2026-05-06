@@ -90,7 +90,13 @@ export default function BolosDecorados() {
               className={s.imgWrapper}
               onClick={() => setSelectedIndex(index)}
             >
-              <img src={post.media_url} alt={post.caption || 'Bolo decorado'} className={s.img} />
+              <img
+                src={post.media_url}
+                alt="Bolo decorado"
+                className={s.img}
+                onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex' }}
+              />
+              <div className={s.imgFallback} style={{ display: 'none' }}>📷</div>
             </div>
           ))}
         </div>

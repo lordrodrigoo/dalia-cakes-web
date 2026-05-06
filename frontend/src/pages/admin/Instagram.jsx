@@ -173,7 +173,13 @@ export default function AdminInstagram() {
         <div className={s.grid}>
           {filtered.map(post => (
             <div key={post.id} className={s.card}>
-              <img src={post.media_url} alt={post.caption || 'Post'} className={s.cardImg} />
+              <img
+                src={post.media_url}
+                alt="Post"
+                className={s.cardImg}
+                onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex' }}
+              />
+              <div className={s.cardImgFallback} style={{ display: 'none' }}>📷</div>
               {post.is_featured && <span className={s.cardFeaturedBadge}>⭐ Destaque</span>}
               <div className={s.cardOverlay}>
                 {post.subcategory_id && (

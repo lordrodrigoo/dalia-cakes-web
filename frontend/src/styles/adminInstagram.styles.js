@@ -15,6 +15,7 @@ export const adminInstagramStyles = {
   grid: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4",
   card: "relative bg-white rounded-xl overflow-hidden shadow border border-gray-100 group",
   cardImg: "w-full aspect-square object-cover",
+  cardImgFallback: "w-full aspect-square items-center justify-center bg-gray-100 text-4xl",
   cardOverlay: "absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2",
   cardSubcategory: "text-xs text-white bg-black/40 px-2 py-1 rounded-full text-center w-full truncate",
   cardDeleteBtn: "text-xs px-3 py-1.5 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors font-medium w-full text-center",

@@ -52,6 +52,8 @@ class InstagramPostUsecase:
     def sync_post(self, instagram_id: str, caption: str | None, media_url: str, permalink: str) -> InstagramPostResponse:
         existing = self.instagram_post_repository.get_by_instagram_id(instagram_id)
         if existing:
+            # Sempre atualiza a URL — CDN do Instagram expira após alguns dias
+            self.instagram_post_repository.refresh_media_url(existing.id, media_url, permalink)
             if existing.subcategory_id is not None:
                 logger.info("Post already synced, skipping", extra={"instagram_id": instagram_id})
                 return InstagramPostResponse(**existing.__dict__)

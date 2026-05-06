@@ -32,4 +32,7 @@ class InstagramPostRepositoryInterface(ABC):
     def update_subcategory(self, post_id: UUID, subcategory_id: Optional[UUID]) -> InstagramPost: pass
 
     @abstractmethod
+    def refresh_media_url(self, post_id: UUID, media_url: str, permalink: str) -> None: pass
+
+    @abstractmethod
     def delete(self, post_id: UUID) -> None: pass

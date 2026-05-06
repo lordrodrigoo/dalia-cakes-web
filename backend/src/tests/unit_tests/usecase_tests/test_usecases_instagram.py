@@ -377,6 +377,24 @@ def test_classify_post_outros_slug_not_matched_as_specific(instagram_usecase, in
 # sync_post — reclassificação de post existente sem subcategoria
 # ──────────────────────────────────────────────
 
+def test_sync_post_existing_refreshes_media_url(instagram_usecase, instagram_post_repository_mock, fake_instagram_post_domain):
+    """URL é sempre atualizada para posts existentes, mesmo já classificados."""
+    instagram_post_repository_mock.get_by_instagram_id.return_value = fake_instagram_post_domain
+
+    instagram_usecase.sync_post(
+        instagram_id=fake_instagram_post_domain.instagram_id,
+        caption="caption",
+        media_url="https://new-cdn.instagram.com/fresh.jpg",
+        permalink="https://instagram.com/p/abc",
+    )
+
+    instagram_post_repository_mock.refresh_media_url.assert_called_once_with(
+        fake_instagram_post_domain.id,
+        "https://new-cdn.instagram.com/fresh.jpg",
+        "https://instagram.com/p/abc",
+    )
+
+
 def test_sync_post_existing_unclassified_gets_reclassified(instagram_usecase, instagram_post_repository_mock, decorated_cake_repository_mock, fake_instagram_post_domain, fake_decorated_cake_domain):
     """Post existente sem subcategoria deve ser reclassificado ao sincronizar."""
     unclassified_post = fake_instagram_post_domain

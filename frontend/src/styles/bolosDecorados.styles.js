@@ -14,6 +14,7 @@ export const bolosDecoradosStyles = {
   grid: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3",
   imgWrapper: "overflow-hidden rounded-xl aspect-square cursor-pointer group",
   img: "w-full h-full object-cover group-hover:scale-105 transition-transform duration-300",
+  imgFallback: "w-full h-full items-center justify-center bg-gray-100 text-4xl",
 
   // Empty / loading
   empty: "text-center py-20 text-gray-400",
