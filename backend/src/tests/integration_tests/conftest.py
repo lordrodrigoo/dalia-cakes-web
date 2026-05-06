@@ -82,7 +82,7 @@ def fake_decorated_cake(db_session):
     cake = DecoratedCakeEntity(
         name="Feminino",
         slug="feminino",
-        hashtag="boloFeminino",
+        hashtag="feminino",
         created_at=datetime.now(timezone.utc),
         updated_at=datetime.now(timezone.utc),
     )

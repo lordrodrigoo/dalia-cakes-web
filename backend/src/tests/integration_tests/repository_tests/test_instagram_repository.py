@@ -55,10 +55,10 @@ def test_get_decorated_cake_by_hashtag(fake_decorated_cake, db_session):
     db_handler = FakeDBConnectionHandler(db_session)
     repo = DecoratedCakeRepository(db_handler)
 
-    result = repo.get_by_hashtag("boloFeminino")
+    result = repo.get_by_hashtag("feminino")
 
     assert result is not None
-    assert result.hashtag == "boloFeminino"
+    assert result.hashtag == "feminino"
 
 
 def test_get_decorated_cake_by_hashtag_not_found(db_session):
@@ -91,7 +91,7 @@ def test_save_instagram_post(fake_decorated_cake, db_session):
 
     post = InstagramPost(
         instagram_id="999888777",
-        caption="Bolo novo #boloFeminino",
+        caption="Bolo novo #feminino",
         media_url="https://example.com/novo.jpg",
         permalink="https://instagram.com/p/novo",
         subcategory_id=fake_decorated_cake.id,

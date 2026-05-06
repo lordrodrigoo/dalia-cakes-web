@@ -4,6 +4,8 @@ from datetime import datetime, timezone, timedelta
 import pytest
 from backend.src.infra.db.entities.decorated_cake import DecoratedCakeEntity
 from backend.src.infra.db.entities.instagram_post import InstagramPostEntity
+from backend.src.infra.db.repositories.instagram_post_repository_interface import InstagramPostRepository
+
 
 
 # ──────────────────────────────────────────────
@@ -14,7 +16,7 @@ def test_insert_decorated_cake(db_session, fake_decorated_cake):
     assert fake_decorated_cake.id is not None
     assert fake_decorated_cake.name == "Feminino"
     assert fake_decorated_cake.slug == "feminino"
-    assert fake_decorated_cake.hashtag == "boloFeminino"
+    assert fake_decorated_cake.hashtag == "feminino"
 
 
 def test_update_decorated_cake(db_session, fake_decorated_cake):
@@ -60,7 +62,7 @@ def test_decorated_cake_unique_hashtag_constraint(db_session, fake_decorated_cak
     duplicate = DecoratedCakeEntity(
         name="Outro Nome",
         slug="outro-slug",
-        hashtag="boloFeminino",
+        hashtag="feminino",
         created_at=datetime.now(timezone.utc),
         updated_at=datetime.now(timezone.utc),
     )
@@ -124,6 +126,60 @@ def test_instagram_post_nullable_subcategory(db_session):
     db_session.refresh(post)
     assert post.id is not None
     assert post.subcategory_id is None
+
+
+# ──────────────────────────────────────────────
+# get_featured — fallback para posts mais recentes
+# ──────────────────────────────────────────────
+
+def test_get_featured_returns_featured_when_available(db_session, fake_instagram_post):
+    """Quando há posts featured válidos, retorna só eles."""
+    class FakeDB:
+        session = db_session
+
+    repo = InstagramPostRepository(FakeDB())
+    result = repo.get_featured()
+    assert any(p.instagram_id == fake_instagram_post.instagram_id for p in result)
+
+
+def test_get_featured_fallback_when_no_featured(db_session, fake_instagram_post):
+    """Quando não há featured, retorna os mais recentes como fallback."""
+    fake_instagram_post.is_featured = False
+    fake_instagram_post.featured_until = datetime.now(timezone.utc) - timedelta(days=1)
+    db_session.commit()
+
+    class FakeDB:
+        session = db_session
+
+    repo = InstagramPostRepository(FakeDB())
+    result = repo.get_featured()
+    assert len(result) >= 1
+    assert any(p.instagram_id == fake_instagram_post.instagram_id for p in result)
+
+
+def test_get_featured_fallback_respects_limit(db_session, fake_decorated_cake):
+    """Fallback não retorna mais que FEATURED_FALLBACK_LIMIT posts."""
+    now = datetime.now(timezone.utc)
+    for i in range(15):
+        post = InstagramPostEntity(
+            instagram_id=f"fallback-test-{i}",
+            media_url=f"https://example.com/img{i}.jpg",
+            permalink=f"https://instagram.com/p/{i}",
+            is_featured=False,
+            featured_until=now - timedelta(days=1),
+            synced_at=now - timedelta(hours=i),
+            created_at=now,
+            updated_at=now,
+        )
+        db_session.add(post)
+    db_session.commit()
+
+    class FakeDB:
+        session = db_session
+
+    repo = InstagramPostRepository(FakeDB())
+    result = repo.get_featured()
+    assert len(result) <= InstagramPostRepository.FEATURED_FALLBACK_LIMIT
 
 
 def test_instagram_post_unique_instagram_id_constraint(db_session, fake_instagram_post):

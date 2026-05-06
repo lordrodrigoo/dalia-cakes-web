@@ -1,7 +1,7 @@
 from uuid import UUID
 from typing import Optional
 from datetime import datetime, timezone
-from sqlalchemy import and_
+from sqlalchemy import and_, desc
 from backend.src.infra.db.settings.connection import DBConnectionHandler
 from backend.src.infra.db.entities.instagram_post import InstagramPostEntity
 from backend.src.domain.repositories.instagram_post_repository import InstagramPostRepositoryInterface
@@ -32,6 +32,8 @@ class InstagramPostRepository(InstagramPostRepositoryInterface):
         entity = self.session.query(InstagramPostEntity).filter_by(instagram_id=instagram_id).first()
         return InstagramPost.from_entity(entity) if entity else None
 
+    FEATURED_FALLBACK_LIMIT = 12
+
     def get_featured(self) -> list[InstagramPost]:
         now = datetime.now(timezone.utc)
         entities = self.session.query(InstagramPostEntity).filter(
@@ -40,7 +42,16 @@ class InstagramPostRepository(InstagramPostRepositoryInterface):
                 InstagramPostEntity.featured_until >= now,
             )
         ).all()
-        return [InstagramPost.from_entity(e) for e in entities]
+        if entities:
+            return [InstagramPost.from_entity(e) for e in entities]
+        # Fallback: nenhum post featured ativo — retorna os mais recentes
+        fallback = (
+            self.session.query(InstagramPostEntity)
+            .order_by(desc(InstagramPostEntity.synced_at))
+            .limit(self.FEATURED_FALLBACK_LIMIT)
+            .all()
+        )
+        return [InstagramPost.from_entity(e) for e in fallback]
 
     def get_by_subcategory(self, subcategory_id: UUID) -> list[InstagramPost]:
         entities = self.session.query(InstagramPostEntity).filter_by(subcategory_id=subcategory_id).all()
