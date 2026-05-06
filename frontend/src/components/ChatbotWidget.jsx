@@ -190,13 +190,22 @@ export default function ChatbotWidget() {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend() }
   }
 
-  // ── Posição da janela de chat (acima / à esquerda do FAB) ──────────────
-  const chatStyle = pos ? {
-    position: 'fixed',
-    right:  Math.max(GAP, window.innerWidth  - pos.x - FAB_SIZE),
-    bottom: Math.max(GAP, window.innerHeight - pos.y + 8),
-    zIndex: 50,
-  } : {}
+  // ── Posição da janela de chat — sempre dentro do viewport ────────────
+  const chatStyle = pos ? (() => {
+    const CHAT_W = 320
+    const CHAT_H = 480
+
+    // Horizontal: alinha borda direita da janela com a do FAB, depois clamp
+    let left = pos.x + FAB_SIZE - CHAT_W
+    left = Math.max(GAP, Math.min(window.innerWidth - CHAT_W - GAP, left))
+
+    // Vertical: tenta abrir acima do FAB; se não couber, abre abaixo
+    let top = pos.y - CHAT_H - 8
+    if (top < GAP) top = pos.y + FAB_SIZE + 8
+    top = Math.max(GAP, Math.min(window.innerHeight - CHAT_H - GAP, top))
+
+    return { position: 'fixed', left, top, zIndex: 50 }
+  })() : {}
 
   // ── Posição do FAB ─────────────────────────────────────────────────────
   const fabStyle = pos ? {

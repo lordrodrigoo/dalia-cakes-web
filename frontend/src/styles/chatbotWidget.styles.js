@@ -4,7 +4,7 @@ export const chatbotStyles = {
   fabUnread: "absolute -top-1 -right-1 w-4 h-4 bg-pink-500 rounded-full border-2 border-white",
 
   // Janela do chat
-  window: "fixed bottom-24 right-6 z-50 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-pink-100 flex flex-col overflow-hidden",
+  window: "w-80 bg-white rounded-2xl shadow-2xl border border-pink-100 flex flex-col overflow-hidden",
   windowEnter: "animate-[fadeSlideUp_0.25s_ease-out]",
 
   // Header da janela
