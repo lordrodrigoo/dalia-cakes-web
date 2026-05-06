@@ -218,6 +218,18 @@ def fake_decorated_cake_domain():
 
 
 @pytest.fixture
+def fake_outros_cake_domain():
+    return DecoratedCake(
+        id=uuid4(),
+        name="Outros",
+        slug="outros",
+        hashtag="outros",
+        created_at=datetime.now(),
+        updated_at=datetime.now(),
+    )
+
+
+@pytest.fixture
 def fake_instagram_post_domain(fake_decorated_cake_domain):
     now = datetime.now(timezone.utc)
     return InstagramPost(

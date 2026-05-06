@@ -30,6 +30,7 @@ def test_sync_post_new_post(instagram_usecase, instagram_post_repository_mock, d
 
 
 def test_sync_post_already_exists(instagram_usecase, instagram_post_repository_mock, fake_instagram_post_domain):
+    # fake_instagram_post_domain já tem subcategory_id — deve retornar sem reclassificar
     instagram_post_repository_mock.get_by_instagram_id.return_value = fake_instagram_post_domain
 
     result = instagram_usecase.sync_post(
@@ -41,9 +42,11 @@ def test_sync_post_already_exists(instagram_usecase, instagram_post_repository_m
 
     assert result.instagram_id == fake_instagram_post_domain.instagram_id
     instagram_post_repository_mock.save.assert_not_called()
+    instagram_post_repository_mock.update_subcategory.assert_not_called()
 
 
 def test_sync_post_no_matching_hashtag(instagram_usecase, instagram_post_repository_mock, decorated_cake_repository_mock, fake_instagram_post_domain, fake_decorated_cake_domain):
+    # Sem "outros" nas subcategorias — deve salvar sem subcategory_id
     instagram_post_repository_mock.get_by_instagram_id.return_value = None
     decorated_cake_repository_mock.get_all.return_value = [fake_decorated_cake_domain]
     instagram_post_repository_mock.save.return_value = fake_instagram_post_domain
@@ -60,8 +63,9 @@ def test_sync_post_no_matching_hashtag(instagram_usecase, instagram_post_reposit
     assert save_call.subcategory_id is None
 
 
-def test_sync_post_no_caption(instagram_usecase, instagram_post_repository_mock, fake_instagram_post_domain):
+def test_sync_post_no_caption(instagram_usecase, instagram_post_repository_mock, decorated_cake_repository_mock, fake_instagram_post_domain):
     instagram_post_repository_mock.get_by_instagram_id.return_value = None
+    decorated_cake_repository_mock.get_all.return_value = []
     instagram_post_repository_mock.save.return_value = fake_instagram_post_domain
 
     result = instagram_usecase.sync_post(
@@ -312,3 +316,132 @@ def test_refresh_featured_status_keeps_valid_posts(instagram_usecase, instagram_
     instagram_usecase.refresh_featured_status()
 
     instagram_post_repository_mock.update_featured_status.assert_not_called()
+
+
+# ──────────────────────────────────────────────
+# _classify_post — catch-all Outros
+# ──────────────────────────────────────────────
+
+def test_classify_post_falls_back_to_outros(instagram_usecase, instagram_post_repository_mock, decorated_cake_repository_mock, fake_instagram_post_domain, fake_decorated_cake_domain, fake_outros_cake_domain):
+    """Sem match de hashtag específico, deve atribuir a categoria Outros."""
+    instagram_post_repository_mock.get_by_instagram_id.return_value = None
+    decorated_cake_repository_mock.get_all.return_value = [fake_decorated_cake_domain, fake_outros_cake_domain]
+    instagram_post_repository_mock.save.return_value = fake_instagram_post_domain
+
+    instagram_usecase.sync_post(
+        instagram_id="no_match",
+        caption="Caixinha de doces especial",
+        media_url="https://example.com/img.jpg",
+        permalink="https://instagram.com/p/no_match",
+    )
+
+    save_call = instagram_post_repository_mock.save.call_args[0][0]
+    assert save_call.subcategory_id == fake_outros_cake_domain.id
+
+
+def test_classify_post_no_caption_falls_back_to_outros(instagram_usecase, instagram_post_repository_mock, decorated_cake_repository_mock, fake_instagram_post_domain, fake_outros_cake_domain):
+    """Post sem caption deve ir para Outros."""
+    instagram_post_repository_mock.get_by_instagram_id.return_value = None
+    decorated_cake_repository_mock.get_all.return_value = [fake_outros_cake_domain]
+    instagram_post_repository_mock.save.return_value = fake_instagram_post_domain
+
+    instagram_usecase.sync_post(
+        instagram_id="no_caption",
+        caption=None,
+        media_url="https://example.com/img.jpg",
+        permalink="https://instagram.com/p/no_caption",
+    )
+
+    save_call = instagram_post_repository_mock.save.call_args[0][0]
+    assert save_call.subcategory_id == fake_outros_cake_domain.id
+
+
+def test_classify_post_outros_slug_not_matched_as_specific(instagram_usecase, instagram_post_repository_mock, decorated_cake_repository_mock, fake_instagram_post_domain, fake_decorated_cake_domain, fake_outros_cake_domain):
+    """Categoria Outros deve ser ignorada no matching específico e usada só como fallback."""
+    instagram_post_repository_mock.get_by_instagram_id.return_value = None
+    decorated_cake_repository_mock.get_all.return_value = [fake_outros_cake_domain, fake_decorated_cake_domain]
+    instagram_post_repository_mock.save.return_value = fake_instagram_post_domain
+
+    instagram_usecase.sync_post(
+        instagram_id="feminino_post",
+        caption="Bolo feminino lindo",
+        media_url="https://example.com/img.jpg",
+        permalink="https://instagram.com/p/fem",
+    )
+
+    save_call = instagram_post_repository_mock.save.call_args[0][0]
+    assert save_call.subcategory_id == fake_decorated_cake_domain.id
+
+
+# ──────────────────────────────────────────────
+# sync_post — reclassificação de post existente sem subcategoria
+# ──────────────────────────────────────────────
+
+def test_sync_post_existing_unclassified_gets_reclassified(instagram_usecase, instagram_post_repository_mock, decorated_cake_repository_mock, fake_instagram_post_domain, fake_decorated_cake_domain):
+    """Post existente sem subcategoria deve ser reclassificado ao sincronizar."""
+    unclassified_post = fake_instagram_post_domain
+    unclassified_post.subcategory_id = None
+
+    instagram_post_repository_mock.get_by_instagram_id.return_value = unclassified_post
+    decorated_cake_repository_mock.get_all.return_value = [fake_decorated_cake_domain]
+    instagram_post_repository_mock.update_subcategory.return_value = fake_instagram_post_domain
+
+    instagram_usecase.sync_post(
+        instagram_id=unclassified_post.instagram_id,
+        caption="Bolo feminino especial",
+        media_url="https://example.com/img.jpg",
+        permalink="https://instagram.com/p/abc",
+    )
+
+    instagram_post_repository_mock.update_subcategory.assert_called_once_with(
+        unclassified_post.id, fake_decorated_cake_domain.id
+    )
+    instagram_post_repository_mock.save.assert_not_called()
+
+
+def test_sync_post_existing_unclassified_no_match_stays_unclassified(instagram_usecase, instagram_post_repository_mock, decorated_cake_repository_mock, fake_instagram_post_domain, fake_decorated_cake_domain):
+    """Post existente sem subcategoria e sem match deve permanecer sem subcategoria."""
+    unclassified_post = fake_instagram_post_domain
+    unclassified_post.subcategory_id = None
+
+    instagram_post_repository_mock.get_by_instagram_id.return_value = unclassified_post
+    decorated_cake_repository_mock.get_all.return_value = [fake_decorated_cake_domain]
+
+    instagram_usecase.sync_post(
+        instagram_id=unclassified_post.instagram_id,
+        caption="Post sem hashtag relevante",
+        media_url="https://example.com/img.jpg",
+        permalink="https://instagram.com/p/abc",
+    )
+
+    instagram_post_repository_mock.update_subcategory.assert_not_called()
+    instagram_post_repository_mock.save.assert_not_called()
+
+
+# ──────────────────────────────────────────────
+# reclassify_unclassified_posts
+# ──────────────────────────────────────────────
+
+def test_reclassify_unclassified_posts_classifies_all(instagram_usecase, instagram_post_repository_mock, decorated_cake_repository_mock, fake_instagram_post_domain, fake_decorated_cake_domain):
+    unclassified = fake_instagram_post_domain
+    unclassified.subcategory_id = None
+    unclassified.caption = "Bolo feminino"
+
+    instagram_post_repository_mock.get_unclassified.return_value = [unclassified]
+    decorated_cake_repository_mock.get_all.return_value = [fake_decorated_cake_domain]
+
+    count = instagram_usecase.reclassify_unclassified_posts()
+
+    assert count == 1
+    instagram_post_repository_mock.update_subcategory.assert_called_once_with(
+        unclassified.id, fake_decorated_cake_domain.id
+    )
+
+
+def test_reclassify_unclassified_posts_empty(instagram_usecase, instagram_post_repository_mock):
+    instagram_post_repository_mock.get_unclassified.return_value = []
+
+    count = instagram_usecase.reclassify_unclassified_posts()
+
+    assert count == 0
+    instagram_post_repository_mock.update_subcategory.assert_not_called()

@@ -35,20 +35,37 @@ class InstagramPostUsecase:
         self.upload_usecase = upload_usecase
 
 
+    def _classify_post(self, caption: str | None, subcategories: list) -> Optional[UUID]:
+        """Returns the subcategory_id for the post, or the 'outros' catch-all if nothing matches."""
+        if caption:
+            caption_lower = caption.lower()
+            for sub in subcategories:
+                if sub.slug == "outros":
+                    continue
+                if sub.hashtag.lower() in caption_lower:
+                    return sub.id
+
+        outros = next((s for s in subcategories if s.slug == "outros"), None)
+        return outros.id if outros else None
+
+
     def sync_post(self, instagram_id: str, caption: str | None, media_url: str, permalink: str) -> InstagramPostResponse:
         existing = self.instagram_post_repository.get_by_instagram_id(instagram_id)
         if existing:
-            logger.info("Post already synced, skipping", extra={"instagram_id": instagram_id})
+            if existing.subcategory_id is not None:
+                logger.info("Post already synced, skipping", extra={"instagram_id": instagram_id})
+                return InstagramPostResponse(**existing.__dict__)
+            # Existing but unclassified — try to reclassify now
+            subcategories = self.decorated_cake_repository.get_all()
+            subcategory_id = self._classify_post(caption, subcategories)
+            if subcategory_id:
+                updated = self.instagram_post_repository.update_subcategory(existing.id, subcategory_id)
+                logger.info("Unclassified post reclassified on sync", extra={"instagram_id": instagram_id})
+                return InstagramPostResponse(**updated.__dict__)
             return InstagramPostResponse(**existing.__dict__)
 
-        subcategory_id = None
-        if caption:
-            caption_lower = caption.lower()
-            subcategories = self.decorated_cake_repository.get_all()
-            for sub in subcategories:
-                if sub.hashtag.lower() in caption_lower:
-                    subcategory_id = sub.id
-                    break
+        subcategories = self.decorated_cake_repository.get_all()
+        subcategory_id = self._classify_post(caption, subcategories)
 
         now = datetime.now(timezone.utc)
         post = InstagramPost(
@@ -141,6 +158,22 @@ class InstagramPostUsecase:
             if post.is_featured and post.featured_until < now:
                 self.instagram_post_repository.update_featured_status(post.id, False, now)
                 logger.info("Post featured status expired", extra={"post_id": post.id})
+
+
+    def reclassify_unclassified_posts(self) -> int:
+        """Tenta classificar todos os posts sem subcategoria. Retorna o total reclassificado."""
+        unclassified = self.instagram_post_repository.get_unclassified()
+        if not unclassified:
+            return 0
+        subcategories = self.decorated_cake_repository.get_all()
+        count = 0
+        for post in unclassified:
+            subcategory_id = self._classify_post(post.caption, subcategories)
+            if subcategory_id:
+                self.instagram_post_repository.update_subcategory(post.id, subcategory_id)
+                logger.info("Post reclassified", extra={"post_id": post.id, "subcategory_id": subcategory_id})
+                count += 1
+        return count
 
 
     def create_manual_post(

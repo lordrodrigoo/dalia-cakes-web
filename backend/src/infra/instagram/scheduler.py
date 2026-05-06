@@ -63,6 +63,9 @@ def sync_instagram_job() -> dict:
                 errors += 1
 
         usecase.refresh_featured_status()
+        reclassified = usecase.reclassify_unclassified_posts()
+        if reclassified:
+            logger.info("Unclassified posts reclassified", extra={"count": reclassified})
 
     logger.info("Instagram sync job completed", extra={"synced": synced, "skipped": skipped, "errors": errors})
     return {"synced": synced, "skipped": skipped, "errors": errors}
