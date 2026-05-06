@@ -1,355 +1,245 @@
-# Dalia Bolos e Doces — API
+<div align="center">
 
-🇧🇷 Versão em Português · 🇺🇸 English version below
+<img src="frontend/src/assets/images/logo_home.png" alt="Dalia Bolos e Doces" width="140" />
 
----
+# Dalia Bolos e Doces
 
-## 🇧🇷 Português
+### Plataforma web completa para confeitaria artesanal
 
-API REST da confeitaria artesanal **Dalia Bolos e Doces**, construída com FastAPI e Clean Architecture. Autenticação JWT, chatbot com Gemini AI, sincronização com Instagram, upload de imagens para S3 com otimização via Pillow, cobertura de testes de 100% e pipeline CI/CD com deploy automático na EC2.
+*API REST · Painel Administrativo · Vitrine para Clientes*
 
-![Python](https://img.shields.io/badge/python-3.12%2B-blue?logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.135%2B-009688?logo=fastapi&logoColor=white)
-![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.0%2B-D71F00)
-![Alembic](https://img.shields.io/badge/Alembic-migrations-6BA81E)
-![Pytest](https://img.shields.io/badge/pytest-tested-0A9EDC?logo=pytest&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-compose-2496ED?logo=docker&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15%2B-4169E1?logo=postgresql&logoColor=white)
-![AWS S3](https://img.shields.io/badge/AWS-S3-FF9900?logo=amazonaws&logoColor=white)
-![Gemini](https://img.shields.io/badge/Gemini-2.5Flash-4285F4?logo=google&logoColor=white)
-![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen?logo=codecov&logoColor=white)
+[![Backend CI](https://github.com/rodrigog3wconcept/dalia-cakes-web/actions/workflows/backend.yml/badge.svg)](https://github.com/rodrigog3wconcept/dalia-cakes-web/actions/workflows/backend.yml)
+[![Frontend CI](https://github.com/rodrigog3wconcept/dalia-cakes-web/actions/workflows/frontend.yml/badge.svg)](https://github.com/rodrigog3wconcept/dalia-cakes-web/actions/workflows/frontend.yml)
+[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)](backend/README.md)
+[![Tests](https://img.shields.io/badge/tests-400%20passed-brightgreen)](backend/README.md)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
+</div>
 
 ---
 
-## 📋 Índice
+## O Projeto
 
-- [Tecnologias](#-tecnologias)
-- [Funcionalidades](#-funcionalidades)
-- [Estrutura do Projeto](#-estrutura-do-projeto)
-- [Como Começar](#-como-começar)
-- [Rodando com Docker](#-rodando-com-docker)
-- [Migrações](#-migrações)
-- [Testes e Cobertura](#-testes-e-cobertura)
-- [Variáveis de Ambiente](#-variáveis-de-ambiente)
-- [Documentação da API](#-documentação-da-api)
-- [CI/CD e Deploy](#-cicd-e-deploy)
+Sistema completo desenvolvido para a confeitaria artesanal **Dalia Bolos e Doces**, cobrindo desde a vitrine para os clientes até o gerenciamento interno de conteúdo pela proprietária.
+
+O site puxa posts diretamente do Instagram e os organiza automaticamente por categoria de bolo — a Dalia só precisa postar normalmente e o site se atualiza sozinho. O painel administrativo permite gerenciar produtos, categorias, bolos decorados e posts sem nenhum conhecimento técnico.
 
 ---
 
-## 🛠 Tecnologias
+## Stack
 
-- Python 3.12+
-- FastAPI + Uvicorn
-- SQLAlchemy 2.0+ (sync) + PostgreSQL 15+
-- Alembic (migrações)
-- Pytest + Coverage.py (100%)
-- Docker & Docker Compose
-- AWS S3 + boto3 (upload de imagens)
-- Pillow (redimensionamento e conversão WebP)
-- Google Gemini 2.5 Flash (chatbot IA)
-- APScheduler (sincronização Instagram)
-- python-jose (JWT)
-- bcrypt (hash de senhas)
-- structlog (logging estruturado)
-- slowapi (rate limiting)
-- Pydantic v2
+### Backend
+
+<div>
+
+![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.135-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.0-D71F00?style=for-the-badge)
+![Alembic](https://img.shields.io/badge/Alembic-Migrations-6BA81E?style=for-the-badge)
+![Pydantic](https://img.shields.io/badge/Pydantic-v2-E92063?style=for-the-badge&logo=pydantic&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-Auth-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+![Pytest](https://img.shields.io/badge/Pytest-100%25_coverage-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white)
+
+</div>
+
+<div>
+
+![AWS S3](https://img.shields.io/badge/AWS_S3-Storage-FF9900?style=for-the-badge&logo=amazons3&logoColor=white)
+![Pillow](https://img.shields.io/badge/Pillow-Image_Processing-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Google Gemini](https://img.shields.io/badge/Gemini_2.5_Flash-Chatbot-4285F4?style=for-the-badge&logo=google&logoColor=white)
+![APScheduler](https://img.shields.io/badge/APScheduler-Background_Jobs-FF6B35?style=for-the-badge)
+![Instagram API](https://img.shields.io/badge/Instagram_Graph_API-E4405F?style=for-the-badge&logo=instagram&logoColor=white)
+![Uvicorn](https://img.shields.io/badge/Uvicorn-ASGI-499848?style=for-the-badge)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+
+</div>
+
+### Frontend
+
+<div>
+
+![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![React Router](https://img.shields.io/badge/React_Router-7-CA4245?style=for-the-badge&logo=reactrouter&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios-1.15-5A29E4?style=for-the-badge)
+![ESLint](https://img.shields.io/badge/ESLint-9-4B32C3?style=for-the-badge&logo=eslint&logoColor=white)
+
+</div>
+
+### Infraestrutura
+
+<div>
+
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI%2FCD-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
+![AWS EC2](https://img.shields.io/badge/AWS_EC2-Deploy-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white)
+![GHCR](https://img.shields.io/badge/GHCR-Container_Registry-181717?style=for-the-badge&logo=github&logoColor=white)
+![Nginx](https://img.shields.io/badge/Nginx-Frontend_Server-009639?style=for-the-badge&logo=nginx&logoColor=white)
+
+</div>
 
 ---
 
-## ✨ Funcionalidades
+## Funcionalidades
 
 | Módulo | Descrição |
 |--------|-----------|
-| **Auth** | Login JWT, refresh token, logout |
-| **Admin** | CRUD de administradores (OWNER/ADMIN) |
-| **Categorias** | CRUD de categorias de produtos |
-| **Produtos** | CRUD de produtos com imagem |
-| **Upload** | Upload de imagens → processamento Pillow → S3 |
-| **Bolos Decorados** | Subcategorias: feminino, masculino, neutro, infantil |
-| **Instagram** | Sincronização automática de posts via Graph API |
-| **Chatbot** | Assistente virtual com Gemini AI e histórico de sessão |
+| **Vitrine** | Cardápio por categorias, galeria de bolos decorados, sobre e contato |
+| **Instagram** | Sync automático a cada 6h, classificação por palavra-chave na caption, categoria catch-all |
+| **Carousel** | Posts em destaque com fallback automático — nunca fica vazio |
+| **Chatbot** | Assistente virtual com Gemini AI, contexto do negócio e histórico de sessão |
+| **Upload** | Imagens convertidas para WebP e otimizadas, armazenadas no S3 |
+| **Auth** | JWT com refresh automático, roles OWNER e ADMIN |
+| **Admin** | Painel completo para gerenciar produtos, categorias e posts sem conhecimento técnico |
+| **CI/CD** | Deploy automático na EC2 com rollback em caso de falha |
 
 ---
 
-## 📁 Estrutura do Projeto
+## Arquitetura
 
 ```
-dalia-cakes-web/
-├── .github/workflows/     — Pipeline CI/CD (GitHub Actions)
-├── backend/
-│   └── src/
-│       ├── api/
-│       │   ├── controllers/   — Endpoints HTTP
-│       │   └── dependencies.py
-│       ├── config/            — Settings, JWT, bcrypt, rate limiter, logger
-│       ├── domain/
-│       │   ├── models/        — Entidades de domínio
-│       │   └── repositories/  — Interfaces dos repositórios
-│       ├── dto/
-│       │   ├── request/       — Schemas de entrada (Pydantic)
-│       │   └── response/      — Schemas de saída (Pydantic)
-│       ├── exceptions/        — Exceções customizadas por módulo
-│       ├── infra/
-│       │   ├── db/
-│       │   │   ├── entities/      — Modelos ORM (SQLAlchemy)
-│       │   │   ├── repositories/  — Implementações concretas
-│       │   │   └── settings/      — Configuração do banco
-│       │   ├── gemini/        — Cliente HTTP Gemini AI
-│       │   └── s3/            — Cliente AWS S3
-│       ├── middlewares/       — Correlation ID e logging
-│       ├── usecases/          — Lógica de negócio pura
-│       └── tests/             — Testes unitários e de integração
-├── migrations/            — Migrações Alembic
-├── docs/                  — Documentação e diagramas
-├── Dockerfile             — Build multi-stage
-├── docker-compose.yml     — Ambiente local
-├── Makefile               — Comandos prontos
-└── .env.example           — Variáveis de ambiente necessárias
+┌──────────────┐     HTTPS      ┌─────────────────────────────────┐
+│   React SPA  │ ─────────────► │          Nginx (EC2)            │
+│   (Vite)     │                │                                 │
+└──────────────┘                │  ┌──────────────────────────┐   │
+                                │  │     FastAPI + Uvicorn    │   │
+                                │  │   (Clean Architecture)   │   │
+                                │  └────────────┬─────────────┘   │
+                                │               │                  │
+                                │  ┌────────────▼─────────────┐   │
+                                │  │      PostgreSQL 15        │   │
+                                │  └──────────────────────────┘   │
+                                └─────────────────────────────────┘
+                                              │
+                              ┌───────────────┼───────────────┐
+                              ▼               ▼               ▼
+                          AWS S3        Instagram        Google
+                         (imagens)      Graph API        Gemini AI
+```
+
+**Backend segue Clean Architecture** com 4 camadas:
+
+```
+API (controllers, DTOs)
+    ↓
+Application (usecases)
+    ↓
+Domain (models, repository interfaces)
+    ↓
+Infrastructure (ORM, S3, Gemini, Instagram, Scheduler)
 ```
 
 ---
 
-## 🚀 Como Começar
+## Início Rápido
 
 ### Pré-requisitos
 
-- Python 3.12+
-- Docker & Docker Compose
-- PostgreSQL 15+ (sem Docker)
-- `openssl` (para gerar SECRET_KEY)
+- Python 3.12+ · Node.js 20+ · Docker & Docker Compose
+- Conta AWS S3 · Chave Google Gemini · Token Instagram Graph API
 
-### Opção A — Makefile (recomendado)
+### Com Docker (recomendado)
 
 ```bash
-# 1. Clone o repositório
-git clone https://github.com/seu-usuario/dalia-cakes-web.git
+git clone <url-do-repositorio>
 cd dalia-cakes-web
 
-# 2. Copie o .env e configure
-make init
-code .env   # preencha os valores
-
-# 3. Instale as dependências
-make setup
-
-# 4. Gere uma SECRET_KEY segura
-make secret-key   # copie o valor para o .env
-
-# 5. Aplique as migrações
-make migrate
-
-# 6. Inicie a aplicação
-make run
-```
-
-Acesse em: http://localhost:8000/docs
-
-### Opção B — Comandos manuais
-
-```bash
-# 1. Clone e configure o ambiente
-git clone https://github.com/seu-usuario/dalia-cakes-web.git
-cd dalia-cakes-web
+# Configurar variáveis de ambiente
 cp .env.example .env
+# edite o .env
 
-# 2. Gere a SECRET_KEY
-openssl rand -hex 32
-
-# 3. Crie e ative o virtualenv
-python3 -m venv venv
-source venv/bin/activate      # Linux/macOS
-# venv\Scripts\activate       # Windows
-
-# 4. Instale as dependências
-pip install -r requirements.txt
-
-# 5. Aplique as migrações
-alembic upgrade head
-
-# 6. Inicie a aplicação
-uvicorn backend.src.main:app --host 0.0.0.0 --port 8000 --reload
-```
-
----
-
-## 🐳 Rodando com Docker
-
-```bash
-# Iniciar todos os containers (app + banco)
+# Subir tudo
 make up
 
-# Parar todos os containers
-make down
-
-# Parar e remover volumes (apaga dados do banco)
-make down-v
-
-# Ver status dos containers
-make ps
-
-# Aplicar migrações dentro do container
+# Aplicar migrações
 make migrate-docker
+
+# → API:  http://localhost:8000/docs
+# → Site: http://localhost:80
 ```
 
----
-
-## 🔄 Migrações
+### Desenvolvimento local
 
 ```bash
-make migrate              # Aplicar todas as migrações pendentes
-make migrate-down         # Reverter a última migração
-make revision msg="..."   # Criar nova migração
+# Backend
+make quickstart     # cria venv + instala dependências + copia .env
+make migrate        # aplica migrações
+make run            # → http://localhost:8000
 
-# Manual
-alembic upgrade head
-alembic downgrade -1
-alembic revision --autogenerate -m "descrição"
+# Frontend (outro terminal)
+cd frontend
+npm install
+npm run dev         # → http://localhost:5173
 ```
 
 ---
 
-## 🧪 Testes e Cobertura
+## Documentação Detalhada
 
-```bash
-make test-unit          # Testes unitários
-make test-all           # Todos os testes com relatório de cobertura
+| Módulo | README |
+|--------|--------|
+| Backend — API, arquitetura, testes, Instagram, CI/CD | [backend/README.md](backend/README.md) |
+| Frontend — páginas, admin, autenticação, build | [frontend/README.md](frontend/README.md) |
 
-# Manual
-pytest backend/src/tests/unit_tests/ -v
-pytest --cov=backend/src --cov-report=term-missing
-pytest --cov=backend/src --cov-report=html   # abre em htmlcov/index.html
+---
+
+## Estrutura do Repositório
+
+```
+dalia-cakes-web/
+├── backend/               # API FastAPI (Clean Architecture)
+│   └── src/
+│       ├── api/           # Controllers e DTOs
+│       ├── domain/        # Modelos e interfaces
+│       ├── usecases/      # Lógica de negócio
+│       └── infra/         # Banco, S3, Gemini, Instagram
+├── frontend/              # SPA React + Tailwind
+│   └── src/
+│       ├── pages/         # Páginas públicas e admin
+│       ├── components/    # Componentes reutilizáveis
+│       └── services/      # Camada de acesso à API
+├── migrations/            # Histórico Alembic
+├── .github/workflows/     # Pipelines CI/CD
+├── Dockerfile             # Backend
+├── Dockerfile.frontend    # Frontend (multi-stage)
+├── docker-compose.yml
+├── Makefile               # Comandos prontos
+└── .env.example
 ```
 
-Cobertura atual: **100%**
+---
+
+## Como Deixar Este README Ainda Mais Profissional
+
+Algumas melhorias que fazem a diferença em projetos reais:
+
+1. **Adicione um banner personalizado** — uma imagem de 1280×640px no topo com o logo e nome do projeto eleva bastante o visual. Ferramentas: Canva, Figma.
+
+2. **GIF de demonstração** — um curto screencast do painel admin ou do site funcionando vale mais que mil palavras. Ferramentas: LICEcap, ScreenToGif.
+
+3. **Badge de deploy** — se o repositório for público, os badges do GitHub Actions aparecem com status real (verde/vermelho) automaticamente.
+
+4. **Seção de screenshots** — adicione 2-3 capturas de tela do site e do painel admin com título e descrição.
+
+5. **CONTRIBUTING.md** — descreve como contribuir (branch naming, PR template, como rodar testes). Indispensável se o projeto for open source.
+
+6. **GitHub Topics** — no repositório GitHub, adicione tags como `fastapi`, `react`, `instagram-api`, `clean-architecture`. Melhora a descoberta.
+
+7. **Releases** — use as GitHub Releases para marcar versões com changelog. O badge de latest release é muito profissional.
+
+8. **Tamanho do README** — este README está no tamanho certo. READMEs muito longos afastam. Todo o detalhe técnico está nos sub-READMEs e quem quiser mergulha fundo.
 
 ---
 
-## 🔐 Variáveis de Ambiente
+## Licença
 
-Copie `.env.example` para `.env` e preencha todos os valores:
-
-```env
-# Banco de Dados
-DB_URL=postgresql+psycopg2://postgres:postgres@localhost:5432/dalia_cakes_db
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=dalia_cakes_db
-ALEMBIC_DATABASE_URL=postgresql+psycopg2://postgres:postgres@localhost:5432/dalia_cakes_db
-
-# JWT
-SECRET_KEY=             # gere com: openssl rand -hex 32
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-REFRESH_TOKEN_EXPIRE_DAYS=7
-
-# AWS S3
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
-AWS_S3_BUCKET=
-AWS_S3_REGION=us-east-1
-
-# Google Gemini (Chatbot)
-GEMINI_API_KEY=
-GEMINI_MODEL=gemini-2.5-flash
-
-# Informações do negócio (usadas pelo chatbot)
-BUSINESS_NAME=Dalia Bolos e Doces
-BUSINESS_PHONE=
-BUSINESS_ADDRESS=
-BUSINESS_CITY=
-BUSINESS_HOURS=
-BUSINESS_PAYMENT_METHODS=
-BUSINESS_IFOOD_LINK=
-BUSINESS_ORDER_ADVANCE_DAYS=
-
-# Instagram
-INSTAGRAM_ACCESS_TOKEN=
-
-# Owner (criado automaticamente na primeira inicialização)
-OWNER_USERNAME=owner
-OWNER_PASSWORD=ChangeMe@2026
-OWNER_EMAIL=owner@daliacakes.com
-OWNER_FIRST_NAME=System
-OWNER_LAST_NAME=Owner
-
-# API
-API_TITLE=dalia cakes API
-API_VERSION=1.0.0
-API_V1_PREFIX=/api/v1
-ENV=development
-
-# Logging
-LOG_LEVEL=DEBUG
-LOG_FORMAT=text
-```
-
-> ⚠️ Nunca faça commit do arquivo `.env`. Ele já está no `.gitignore`.
+Distribuído sob a licença MIT. Veja [LICENSE](LICENSE) para mais informações.
 
 ---
 
-## 📬 Documentação da API
+<div align="center">
 
-Com a aplicação rodando:
+Feito com cuidado para a **Confeitaria da Dalia** · 2026
 
-- **Swagger UI:** http://localhost:8000/docs
-- **ReDoc:** http://localhost:8000/redoc
-
-### Roles de autenticação
-
-| Role | Descrição |
-|------|-----------|
-| `OWNER` | Acesso total a todos os recursos |
-| `ADMIN` | Gerencia produtos, categorias e Instagram |
-
----
-
-## 🚀 CI/CD e Deploy
-
-O pipeline é automatizado via GitHub Actions. A cada push na branch `main`:
-
-1. Lint (pylint) + testes unitários rodam em paralelo
-2. Imagem Docker é validada (build sem push) em todo PR
-3. Imagem é publicada no GHCR com tag do commit SHA
-4. Deploy via SSH na EC2 com health check automático
-5. Em caso de falha, rollback automático para a versão anterior
-
-### Secrets necessários no GitHub
-
-| Secret | Descrição |
-|--------|-----------|
-| `EC2_HOST` | IP ou domínio da instância EC2 |
-| `EC2_USER` | Usuário SSH (ex: `ubuntu`) |
-| `EC2_SSH_KEY` | Chave privada SSH |
-| `EC2_DEPLOY_PATH` | Caminho do projeto na EC2 |
-| `CONTAINER_REGISTRY_TOKEN` | PAT do GitHub com permissão `packages:write` |
-| `CONTAINER_REGISTRY_USERNAME` | Seu usuário GitHub |
-| `SMTP_USERNAME` | Email para notificações de falha |
-| `SMTP_PASSWORD` | Senha do email |
-| `NOTIFY_EMAIL` | Email de destino das notificações |
-
----
-
----
-
-## 🇺🇸 English
-
-REST API for the artisan bakery **Dalia Bolos e Doces**, built with FastAPI and Clean Architecture. JWT authentication, AI chatbot powered by Gemini, Instagram synchronization, S3 image upload with Pillow optimization, 100% test coverage and CI/CD pipeline with automatic EC2 deployment.
-
-### Quick Start
-
-```bash
-git clone https://github.com/your-username/dalia-cakes-web.git
-cd dalia-cakes-web
-make init && make setup
-make migrate && make run
-```
-
-Access at: http://localhost:8000/docs
-
-For full English documentation, the structure and commands mirror the Portuguese section above — all `make` commands and environment variable names are identical.
-
----
-
-*Dalia Bolos e Doces — v1.0 — 2026*
+</div>
