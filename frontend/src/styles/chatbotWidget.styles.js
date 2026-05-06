@@ -1,6 +1,6 @@
 export const chatbotStyles = {
   // Botão flutuante
-  fab: "fixed bottom-6 right-6 z-50 w-24 h-24 rounded-full shadow-2xl bg-white border-2 border-pink-200 flex items-center justify-center cursor-pointer hover:scale-110 transition-transform duration-200 hover:border-pink-400",
+  fab: "w-24 h-24 rounded-full shadow-2xl bg-white border-2 border-pink-200 flex items-center justify-center hover:scale-110 transition-transform duration-200 hover:border-pink-400",
   fabUnread: "absolute -top-1 -right-1 w-4 h-4 bg-pink-500 rounded-full border-2 border-white",
 
   // Janela do chat
@@ -21,7 +21,7 @@ export const chatbotStyles = {
   // Bolhas
   bubbleBot: "flex items-end gap-2",
   bubbleBotAvatar: "flex-shrink-0 mb-1",
-  bubbleBotText: "bg-white border border-pink-100 text-gray-700 text-sm px-3 py-2 rounded-2xl rounded-bl-sm shadow-sm max-w-[75%] leading-relaxed",
+  bubbleBotText: "bg-white border border-pink-100 text-gray-700 text-sm px-3 py-2 rounded-2xl rounded-bl-sm shadow-sm max-w-[75%] leading-relaxed break-words overflow-hidden",
 
   bubbleUser: "flex justify-end",
   bubbleUserText: "bg-[#ad1457] text-white text-sm px-3 py-2 rounded-2xl rounded-br-sm shadow-sm max-w-[75%] leading-relaxed",

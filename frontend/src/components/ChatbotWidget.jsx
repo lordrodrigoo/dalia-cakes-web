@@ -3,8 +3,88 @@ import { sendMessage } from '../services/chatbot'
 import ChatbotMascot from './ChatbotMascot'
 import { chatbotStyles as s } from '../styles/chatbotWidget.styles'
 
-const SESSION_KEY = 'docebot_session_id'
+const SESSION_KEY  = 'docebot_session_id'
+const FAB_SIZE     = 96   // w-24 em px
+const GAP          = 24   // bottom-6 / right-6 em px
+const DRAG_THRESHOLD = 6  // px para distinguir click de drag
 
+function getDefaultPos() {
+  return {
+    x: window.innerWidth  - FAB_SIZE - GAP,
+    y: window.innerHeight - FAB_SIZE - GAP,
+  }
+}
+
+// ─── Renderizador de markdown simples ──────────────────────────────────────
+function renderMarkdown(text) {
+  if (!text) return null
+  const lines = text.split('\n')
+
+  return lines.map((line, lineIdx) => {
+    const tokens = []
+    // captura: [texto](url) | URL crua | **texto** | *texto*
+    const regex = /(\[([^\]]+)\]\((https?:\/\/[^)]+)\)|https?:\/\/[^\s)]+|\*\*([^*]+)\*\*|\*([^*]+)\*)/g
+    let last = 0, match
+
+    while ((match = regex.exec(line)) !== null) {
+      if (match.index > last)
+        tokens.push({ type: 'text', content: line.slice(last, match.index) })
+
+      if (match[0].startsWith('[')) {
+        // link markdown [label](url)
+        tokens.push({ type: 'link', label: match[2], url: match[3] })
+      } else if (match[0].startsWith('http')) {
+        // URL crua
+        tokens.push({ type: 'link', label: match[0], url: match[0] })
+      } else if (match[0].startsWith('**')) {
+        const inner = match[0].slice(2, -2)
+        const digits = inner.replace(/\D/g, '')
+        if (/^\+?[\d\s\-().]{8,}$/.test(inner.trim()) && digits.length >= 8)
+          tokens.push({ type: 'phone', content: inner, digits })
+        else
+          tokens.push({ type: 'bold', content: inner })
+      } else if (match[0].startsWith('*')) {
+        tokens.push({ type: 'italic', content: match[0].slice(1, -1) })
+      }
+      last = match.index + match[0].length
+    }
+
+    if (last < line.length)
+      tokens.push({ type: 'text', content: line.slice(last) })
+
+    const rendered = tokens.map((t, i) => {
+      if (t.type === 'bold')
+        return <strong key={i}>{t.content}</strong>
+      if (t.type === 'italic')
+        return <em key={i}>{t.content}</em>
+      if (t.type === 'link')
+        return (
+          <a key={i} href={t.url} target="_blank" rel="noopener noreferrer"
+             className="text-[#ad1457] underline break-all">
+            {t.label}
+          </a>
+        )
+      if (t.type === 'phone')
+        return (
+          <a key={i} href={`https://wa.me/${t.digits}`}
+             target="_blank" rel="noopener noreferrer"
+             className="font-semibold text-[#ad1457] underline">
+            {t.content}
+          </a>
+        )
+      return t.content
+    })
+
+    return (
+      <span key={lineIdx}>
+        {rendered}
+        {lineIdx < lines.length - 1 && <br />}
+      </span>
+    )
+  })
+}
+
+// ─── Indicador de digitação ────────────────────────────────────────────────
 function TypingIndicator() {
   return (
     <div className={s.typing}>
@@ -17,23 +97,29 @@ function TypingIndicator() {
   )
 }
 
+// ─── Widget principal ──────────────────────────────────────────────────────
 export default function ChatbotWidget() {
-  const [open, setOpen]           = useState(false)
-  const [messages, setMessages]   = useState([
+  const [open, setOpen]             = useState(false)
+  const [messages, setMessages]     = useState([
     { from: 'bot', text: 'Olá! Sou o DoceBOT 🎂 Como posso te ajudar hoje?' }
   ])
-  const [input, setInput]         = useState('')
+  const [input, setInput]           = useState('')
   const [isThinking, setIsThinking] = useState(false)
-  const [hasUnread, setHasUnread] = useState(false)
-  const messagesEndRef            = useRef(null)
-  const inputRef                  = useRef(null)
+  const [hasUnread, setHasUnread]   = useState(false)
+  const [pos, setPos]               = useState(null) // null = padrão bottom-right
 
-  // Scroll automático para última mensagem
+  const messagesEndRef = useRef(null)
+  const inputRef       = useRef(null)
+
+  // Inicializa posição após mount (evita SSR)
+  useEffect(() => { setPos(getDefaultPos()) }, [])
+
+  // Scroll automático
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isThinking])
 
-  // Foca no input quando abre
+  // Foca input ao abrir
   useEffect(() => {
     if (open) {
       setHasUnread(false)
@@ -41,23 +127,51 @@ export default function ChatbotWidget() {
     }
   }, [open])
 
+  // ── Drag & drop ────────────────────────────────────────────────────────
+  const handleMouseDown = (e) => {
+    if (e.button !== 0) return
+    e.preventDefault()
+
+    const startMX   = e.clientX
+    const startMY   = e.clientY
+    const startPosX = pos?.x ?? getDefaultPos().x
+    const startPosY = pos?.y ?? getDefaultPos().y
+    let   dragged   = false
+
+    const onMove = (ev) => {
+      const dx = ev.clientX - startMX
+      const dy = ev.clientY - startMY
+      if (!dragged && (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD)) return
+      dragged = true
+      setPos({
+        x: Math.max(0, Math.min(window.innerWidth  - FAB_SIZE, startPosX + dx)),
+        y: Math.max(0, Math.min(window.innerHeight - FAB_SIZE, startPosY + dy)),
+      })
+    }
+
+    const onUp = () => {
+      document.removeEventListener('mousemove', onMove)
+      document.removeEventListener('mouseup',   onUp)
+      if (!dragged) setOpen(prev => !prev) // clique simples → abre/fecha
+    }
+
+    document.addEventListener('mousemove', onMove)
+    document.addEventListener('mouseup',   onUp)
+  }
+
+  // ── Envio de mensagem ──────────────────────────────────────────────────
   const getSessionId = () => {
     let id = sessionStorage.getItem(SESSION_KEY)
-    if (!id) {
-      id = crypto.randomUUID()
-      sessionStorage.setItem(SESSION_KEY, id)
-    }
+    if (!id) { id = crypto.randomUUID(); sessionStorage.setItem(SESSION_KEY, id) }
     return id
   }
 
   const handleSend = async () => {
     const text = input.trim()
     if (!text || isThinking) return
-
     setInput('')
     setMessages(prev => [...prev, { from: 'user', text }])
     setIsThinking(true)
-
     try {
       const { data } = await sendMessage(text, getSessionId())
       setMessages(prev => [...prev, { from: 'bot', text: data.reply }])
@@ -73,37 +187,44 @@ export default function ChatbotWidget() {
   }
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      handleSend()
-    }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend() }
   }
+
+  // ── Posição da janela de chat (acima / à esquerda do FAB) ──────────────
+  const chatStyle = pos ? {
+    position: 'fixed',
+    right:  Math.max(GAP, window.innerWidth  - pos.x - FAB_SIZE),
+    bottom: Math.max(GAP, window.innerHeight - pos.y + 8),
+    zIndex: 50,
+  } : {}
+
+  // ── Posição do FAB ─────────────────────────────────────────────────────
+  const fabStyle = pos ? {
+    position: 'fixed',
+    left:   pos.x,
+    top:    pos.y,
+    zIndex: 50,
+    cursor: 'grab',
+    userSelect: 'none',
+  } : {}
 
   return (
     <>
       {/* Janela de chat */}
       {open && (
-        <div className={`${s.window} ${s.windowEnter}`}>
+        <div className={`${s.window} ${s.windowEnter}`} style={chatStyle}>
 
-          {/* Header */}
           <div className={s.header}>
             <div className={s.headerMascot}>
               <ChatbotMascot size={52} isThinking={isThinking} />
             </div>
             <div className={s.headerInfo}>
               <p className={s.headerName}>DoceBOT</p>
-              <p className={s.headerStatus}>
-                {isThinking ? 'Pensando...' : 'Online ✦'}
-              </p>
+              <p className={s.headerStatus}>{isThinking ? 'Pensando...' : 'Online ✦'}</p>
             </div>
-            <button
-              className={s.headerClose}
-              onClick={() => setOpen(false)}
-              aria-label="Fechar chat"
-            >✕</button>
+            <button className={s.headerClose} onClick={() => setOpen(false)} aria-label="Fechar">✕</button>
           </div>
 
-          {/* Mensagens */}
           <div className={s.messages}>
             {messages.map((msg, i) =>
               msg.from === 'bot' ? (
@@ -111,7 +232,7 @@ export default function ChatbotWidget() {
                   <div className={s.bubbleBotAvatar}>
                     <ChatbotMascot size={38} isThinking={false} />
                   </div>
-                  <p className={s.bubbleBotText}>{msg.text}</p>
+                  <p className={s.bubbleBotText}>{renderMarkdown(msg.text)}</p>
                 </div>
               ) : (
                 <div key={i} className={s.bubbleUser}>
@@ -119,13 +240,10 @@ export default function ChatbotWidget() {
                 </div>
               )
             )}
-
             {isThinking && <TypingIndicator />}
-
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
           <div className={s.inputArea}>
             <input
               ref={inputRef}
@@ -152,15 +270,18 @@ export default function ChatbotWidget() {
         </div>
       )}
 
-      {/* Botão flutuante */}
-      <button
-        className={s.fab}
-        onClick={() => setOpen(prev => !prev)}
-        aria-label={open ? 'Fechar chat' : 'Abrir chat com DoceBOT'}
-      >
-        <ChatbotMascot size={68} isThinking={false} />
-        {hasUnread && !open && <span className={s.fabUnread} />}
-      </button>
+      {/* Botão flutuante — some quando o chat está aberto */}
+      {!open && (
+        <button
+          className={s.fab}
+          style={fabStyle}
+          onMouseDown={handleMouseDown}
+          aria-label="Abrir chat com DoceBOT"
+        >
+          <ChatbotMascot size={68} isThinking={false} />
+          {hasUnread && <span className={s.fabUnread} />}
+        </button>
+      )}
     </>
   )
 }
