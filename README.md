@@ -81,6 +81,38 @@ O site puxa posts diretamente do Instagram e os organiza automaticamente por cat
 
 ---
 
+## Screenshots
+
+### Vitrine Pública
+
+| | |
+|:---:|:---:|
+| ![Home com chatbot](docs/screenshot/desktop/home_chatbot_aberto.png) | ![Bolos Decorados](docs/screenshot/desktop/bolos_decorados.png) |
+| *Página inicial com chatbot Bel Doçura* | *Bolos decorados por categoria* |
+| ![Categorias](docs/screenshot/desktop/categorias.png) | ![Contato](docs/screenshot/desktop/contato.png) |
+| *Cardápio por categorias* | *Contato, mapa e horários* |
+
+### Painel Administrativo
+
+| | |
+|:---:|:---:|
+| ![Dashboard](docs/screenshot/desktop/dashboard.png) | ![Instagram Admin](docs/screenshot/desktop/dashboard_com_detalhe_na_imagem.png) |
+| *Dashboard principal* | *Gerenciamento do Instagram* |
+| ![Bolos Decorados Admin](docs/screenshot/desktop/admin_bolos_decorados.png) | ![API Docs](docs/screenshot/api/api_pt1.png) |
+| *Gerenciamento de bolos decorados* | *Documentação da API (Swagger)* |
+
+### Mobile
+
+<div align="center">
+  <img src="docs/screenshot/mobile/home.png" width="18%" alt="Home" />
+  <img src="docs/screenshot/mobile/bolos_decorados.png" width="18%" alt="Bolos Decorados" />
+  <img src="docs/screenshot/mobile/chatbot_aberto.png" width="18%" alt="Chatbot" />
+  <img src="docs/screenshot/mobile/dashboard.png" width="18%" alt="Admin" />
+  <img src="docs/screenshot/mobile/login.png" width="18%" alt="Login" />
+</div>
+
+---
+
 ## Funcionalidades
 
 | Módulo | Descrição |
@@ -207,28 +239,6 @@ dalia-cakes-web/
 ├── Makefile               # Comandos prontos
 └── .env.example
 ```
-
----
-
-## Como Deixar Este README Ainda Mais Profissional
-
-Algumas melhorias que fazem a diferença em projetos reais:
-
-1. **Adicione um banner personalizado** — uma imagem de 1280×640px no topo com o logo e nome do projeto eleva bastante o visual. Ferramentas: Canva, Figma.
-
-2. **GIF de demonstração** — um curto screencast do painel admin ou do site funcionando vale mais que mil palavras. Ferramentas: LICEcap, ScreenToGif.
-
-3. **Badge de deploy** — se o repositório for público, os badges do GitHub Actions aparecem com status real (verde/vermelho) automaticamente.
-
-4. **Seção de screenshots** — adicione 2-3 capturas de tela do site e do painel admin com título e descrição.
-
-5. **CONTRIBUTING.md** — descreve como contribuir (branch naming, PR template, como rodar testes). Indispensável se o projeto for open source.
-
-6. **GitHub Topics** — no repositório GitHub, adicione tags como `fastapi`, `react`, `instagram-api`, `clean-architecture`. Melhora a descoberta.
-
-7. **Releases** — use as GitHub Releases para marcar versões com changelog. O badge de latest release é muito profissional.
-
-8. **Tamanho do README** — este README está no tamanho certo. READMEs muito longos afastam. Todo o detalhe técnico está nos sub-READMEs e quem quiser mergulha fundo.
 
 ---
 
