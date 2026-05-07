@@ -101,7 +101,7 @@ function TypingIndicator() {
 export default function ChatbotWidget() {
   const [open, setOpen]             = useState(false)
   const [messages, setMessages]     = useState([
-    { from: 'bot', text: 'Olá! Sou o DoceBOT 🎂 Como posso te ajudar hoje?' }
+    { from: 'bot', text: 'Olá! Sou a Bel Doçura 🎂 Como posso te ajudar hoje?' }
   ])
   const [input, setInput]           = useState('')
   const [isThinking, setIsThinking] = useState(false)
@@ -228,7 +228,7 @@ export default function ChatbotWidget() {
               <ChatbotMascot size={52} isThinking={isThinking} />
             </div>
             <div className={s.headerInfo}>
-              <p className={s.headerName}>DoceBOT</p>
+              <p className={s.headerName}>Bel Doçura</p>
               <p className={s.headerStatus}>{isThinking ? 'Pensando...' : 'Online ✦'}</p>
             </div>
             <button className={s.headerClose} onClick={() => setOpen(false)} aria-label="Fechar">✕</button>
@@ -285,7 +285,7 @@ export default function ChatbotWidget() {
           className={s.fab}
           style={fabStyle}
           onMouseDown={handleMouseDown}
-          aria-label="Abrir chat com DoceBOT"
+          aria-label="Abrir chat com a Bel Doçura"
         >
           <ChatbotMascot size={68} isThinking={false} />
           {hasUnread && <span className={s.fabUnread} />}
