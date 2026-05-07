@@ -20,9 +20,15 @@
 
 ## O Projeto
 
-Sistema completo desenvolvido para a confeitaria artesanal **Dalia Bolos e Doces**, cobrindo desde a vitrine para os clientes até o gerenciamento interno de conteúdo pela proprietária.
+Sistema completo desenvolvido para a confeitaria artesanal Dalia Bolos e Doces, cobrindo desde a vitrine para os clientes até o gerenciamento interno de conteúdo pela proprietária.
 
-O site puxa posts diretamente do Instagram e os organiza automaticamente por categoria de bolo — a Dalia só precisa postar normalmente e o site se atualiza sozinho. O painel administrativo permite gerenciar produtos, categorias, bolos decorados e posts sem nenhum conhecimento técnico.
+O site integra diretamente com o Instagram — a cada 6 horas sincroniza os posts automaticamente e os organiza por categoria de bolo usando palavras-chave da legenda. A Dalia só precisa postar normalmente e o site se atualiza sozinho.
+
+O chatbot é alimentado pelo Google Gemini e conhece o cardápio, os preços, o horário de funcionamento e os canais de venda em tempo real — respondendo dúvidas dos clientes 24h por dia sem nenhuma intervenção manual.
+
+O painel administrativo foi desenhado para ser usado sem nenhum conhecimento técnico: gerenciamento completo de produtos, categorias, bolos decorados e posts do Instagram com poucos cliques.
+
+Tecnicamente, o projeto usa Clean Architecture no backend, 100% de cobertura de testes, imagens convertidas automaticamente para WebP e armazenadas no S3, autenticação JWT com refresh automático e CI/CD com deploy automático na AWS EC2.
 
 ---
 
@@ -250,6 +256,6 @@ Distribuído sob a licença MIT. Veja [LICENSE](LICENSE) para mais informações
 
 <div align="center">
 
-Feito com cuidado para a **Confeitaria da Dalia** · 2026
+Feito com muito carinho e dedicação para a **Confeitaria da Dalia** · 2026
 
 </div>
