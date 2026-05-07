@@ -8,8 +8,8 @@
 
 *API REST · Painel Administrativo · Vitrine para Clientes*
 
-[![Backend CI](https://github.com/rodrigog3wconcept/dalia-cakes-web/actions/workflows/backend.yml/badge.svg)](https://github.com/rodrigog3wconcept/dalia-cakes-web/actions/workflows/backend.yml)
-[![Frontend CI](https://github.com/rodrigog3wconcept/dalia-cakes-web/actions/workflows/frontend.yml/badge.svg)](https://github.com/rodrigog3wconcept/dalia-cakes-web/actions/workflows/frontend.yml)
+[![Backend CI](https://github.com/lordrodrigoo/dalia-cakes-web/actions/workflows/backend.yml/badge.svg)](https://github.com/lordrodrigoo/dalia-cakes-web/actions/workflows/backend.yml)
+[![Frontend CI](https://github.com/lordrodrigoo/dalia-cakes-web/actions/workflows/frontend.yml/badge.svg)](https://github.com/lordrodrigoo/dalia-cakes-web/actions/workflows/frontend.yml)
 [![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)](backend/README.md)
 [![Tests](https://img.shields.io/badge/tests-400%20passed-brightgreen)](backend/README.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
@@ -106,7 +106,7 @@ O site puxa posts diretamente do Instagram e os organiza automaticamente por cat
 <div align="center">
   <img src="docs/screenshot/mobile/home.png" width="18%" alt="Home" />
   <img src="docs/screenshot/mobile/bolos_decorados.png" width="18%" alt="Bolos Decorados" />
-  <img src="docs/screenshot/mobile/chatbot_aberto.png" width="18%" alt="Chatbot" />
+  <img src="docs/screenshot/mobile/home_chatbot_aberto.png" width="18%" alt="Chatbot" />
   <img src="docs/screenshot/mobile/dashboard.png" width="18%" alt="Admin" />
   <img src="docs/screenshot/mobile/login.png" width="18%" alt="Login" />
 </div>
