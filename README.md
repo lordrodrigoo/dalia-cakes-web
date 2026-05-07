@@ -94,7 +94,7 @@ Tecnicamente, o projeto usa Clean Architecture no backend, 100% de cobertura de 
 | | |
 |:---:|:---:|
 | ![Home com chatbot](docs/screenshot/desktop/home_chatbot_aberto.png) | ![Bolos Decorados](docs/screenshot/desktop/bolos_decorados.png) |
-| *Página inicial com chatbot Bel Doçura* | *Bolos decorados por categoria* |
+| *Página inicial com chatbot* | *Bolos decorados por categoria* |
 | ![Categorias](docs/screenshot/desktop/categorias.png) | ![Contato](docs/screenshot/desktop/contato.png) |
 | *Cardápio por categorias* | *Contato, mapa e horários* |
 
