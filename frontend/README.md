@@ -118,9 +118,6 @@ frontend/
 │   ├── utils/
 │   │   └── whatsapp.js         # Gera links do WhatsApp com mensagem pré-preenchida
 │   │
-│   ├── data/
-│   │   └── instagramMock.js    # Dados mock para desenvolvimento sem API
-│   │
 │   ├── App.jsx                 # Definição de rotas
 │   └── main.jsx                # Entry point
 │

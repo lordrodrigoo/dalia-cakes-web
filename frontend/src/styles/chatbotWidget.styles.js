@@ -3,6 +3,12 @@ export const chatbotStyles = {
   fab: "w-24 h-24 rounded-full shadow-2xl bg-white border-2 border-pink-200 flex items-center justify-center hover:scale-110 transition-transform duration-200 hover:border-pink-400",
   fabUnread: "absolute -top-1 -right-1 w-4 h-4 bg-pink-500 rounded-full border-2 border-white",
 
+  // Bolinha de saudação
+  greetingBubble: "bg-white border border-pink-200 rounded-2xl shadow-xl px-4 py-3 text-sm text-gray-700 max-w-[210px] relative animate-[fadeSlideUp_0.25s_ease-out]",
+  greetingText: "pr-5 leading-snug",
+  greetingClose: "absolute top-2 right-2 text-pink-300 hover:text-pink-500 text-xs transition-colors leading-none cursor-pointer",
+  greetingTail: "absolute -bottom-[7px] left-1/2 -translate-x-1/2 w-3.5 h-3.5 bg-white border-r border-b border-pink-200 rotate-45",
+
   // Janela do chat
   window: "w-80 bg-white rounded-2xl shadow-2xl border border-pink-100 flex flex-col overflow-hidden",
   windowEnter: "animate-[fadeSlideUp_0.25s_ease-out]",

@@ -101,12 +101,14 @@ function TypingIndicator() {
 export default function ChatbotWidget() {
   const [open, setOpen]             = useState(false)
   const [messages, setMessages]     = useState([
-    { from: 'bot', text: 'Olá! Sou a Bel Doçura 🎂 Como posso te ajudar hoje?' }
+    { from: 'bot', text: 'Olá! Sou a assistente virtual da Dalia Bolos 🎂 Como posso te ajudar hoje?' }
   ])
   const [input, setInput]           = useState('')
   const [isThinking, setIsThinking] = useState(false)
   const [hasUnread, setHasUnread]   = useState(false)
   const [pos, setPos]               = useState(null) // null = padrão bottom-right
+  const [showGreeting, setShowGreeting] = useState(false)
+  const greetingShownRef            = useRef(false)
 
   const messagesEndRef = useRef(null)
   const inputRef       = useRef(null)
@@ -114,15 +116,34 @@ export default function ChatbotWidget() {
   // Inicializa posição após mount (evita SSR)
   useEffect(() => { setPos(getDefaultPos()) }, [])
 
+  // Exibe bolinha de saudação após 3.5s (uma única vez por sessão)
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (!greetingShownRef.current) {
+        setShowGreeting(true)
+        greetingShownRef.current = true
+      }
+    }, 3500)
+    return () => clearTimeout(t)
+  }, [])
+
+  // Auto-esconde a saudação após 7s
+  useEffect(() => {
+    if (!showGreeting) return
+    const t = setTimeout(() => setShowGreeting(false), 7000)
+    return () => clearTimeout(t)
+  }, [showGreeting])
+
   // Scroll automático
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isThinking])
 
-  // Foca input ao abrir
+  // Foca input ao abrir; esconde saudação
   useEffect(() => {
     if (open) {
       setHasUnread(false)
+      setShowGreeting(false)
       setTimeout(() => inputRef.current?.focus(), 100)
     }
   }, [open])
@@ -217,6 +238,15 @@ export default function ChatbotWidget() {
     userSelect: 'none',
   } : {}
 
+  // ── Posição da bolinha de saudação — acima e centralizada no FAB ───────
+  const greetingStyle = pos ? {
+    position:  'fixed',
+    left:      pos.x + FAB_SIZE / 2,
+    top:       pos.y - 12,
+    transform: 'translate(-50%, -100%)',
+    zIndex:    50,
+  } : {}
+
   return (
     <>
       {/* Janela de chat */}
@@ -228,7 +258,7 @@ export default function ChatbotWidget() {
               <ChatbotMascot size={52} isThinking={isThinking} />
             </div>
             <div className={s.headerInfo}>
-              <p className={s.headerName}>Bel Doçura</p>
+              <p className={s.headerName}>Assistente Virtual</p>
               <p className={s.headerStatus}>{isThinking ? 'Pensando...' : 'Online ✦'}</p>
             </div>
             <button className={s.headerClose} onClick={() => setOpen(false)} aria-label="Fechar">✕</button>
@@ -279,13 +309,22 @@ export default function ChatbotWidget() {
         </div>
       )}
 
+      {/* Bolinha de saudação */}
+      {!open && showGreeting && pos && (
+        <div style={greetingStyle} className={s.greetingBubble}>
+          <button className={s.greetingClose} onClick={() => setShowGreeting(false)} aria-label="Fechar">✕</button>
+          <p className={s.greetingText}>Oi! Posso ajudar? 🎂</p>
+          <div className={s.greetingTail} />
+        </div>
+      )}
+
       {/* Botão flutuante — some quando o chat está aberto */}
       {!open && (
         <button
           className={s.fab}
           style={fabStyle}
           onMouseDown={handleMouseDown}
-          aria-label="Abrir chat com a Bel Doçura"
+          aria-label="Abrir chat com a Assistente Virtual"
         >
           <ChatbotMascot size={68} isThinking={false} />
           {hasUnread && <span className={s.fabUnread} />}
