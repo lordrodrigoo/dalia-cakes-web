@@ -101,7 +101,7 @@ function TypingIndicator() {
 export default function ChatbotWidget() {
   const [open, setOpen]             = useState(false)
   const [messages, setMessages]     = useState([
-    { from: 'bot', text: 'Olá! Sou a assistente virtual da Dalia Bolos 🎂 Como posso te ajudar hoje?' }
+    { from: 'bot', text: 'Olá! Sou a assistente virtual da Dalia Bolos e Doces 🎂 Como posso te ajudar hoje?' }
   ])
   const [input, setInput]           = useState('')
   const [isThinking, setIsThinking] = useState(false)
