@@ -55,4 +55,4 @@ volumes:
 
 networks:
   dalia-cakes-network:
-    driver: bridge
+    external: true
