@@ -109,12 +109,29 @@ export default function ChatbotWidget() {
   const [pos, setPos]               = useState(null) // null = padrão bottom-right
   const [showGreeting, setShowGreeting] = useState(false)
   const greetingShownRef            = useRef(false)
+  const userMovedRef                = useRef(false) // true após o usuário arrastar o FAB
 
   const messagesEndRef = useRef(null)
   const inputRef       = useRef(null)
 
   // Inicializa posição após mount (evita SSR)
   useEffect(() => { setPos(getDefaultPos()) }, [])
+
+  // Realoca o FAB quando a janela é redimensionada
+  useEffect(() => {
+    const onResize = () => {
+      if (!userMovedRef.current) {
+        setPos(getDefaultPos())
+        return
+      }
+      setPos(prev => prev && {
+        x: Math.max(0, Math.min(window.innerWidth  - FAB_SIZE, prev.x)),
+        y: Math.max(0, Math.min(window.innerHeight - FAB_SIZE, prev.y)),
+      })
+    }
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
 
   // Exibe bolinha de saudação após 3.5s (uma única vez por sessão)
   useEffect(() => {
@@ -164,6 +181,7 @@ export default function ChatbotWidget() {
       const dy = ev.clientY - startMY
       if (!dragged && (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD)) return
       dragged = true
+      userMovedRef.current = true
       setPos({
         x: Math.max(0, Math.min(window.innerWidth  - FAB_SIZE, startPosX + dx)),
         y: Math.max(0, Math.min(window.innerHeight - FAB_SIZE, startPosY + dy)),
